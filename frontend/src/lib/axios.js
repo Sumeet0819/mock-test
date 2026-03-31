@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const api = axios.create({ baseURL: 'http://localhost:5000' });
+const api = axios.create({ baseURL: 'https://mock-test-5jt0.onrender.com' });
 
 // Attach JWT token automatically
 api.interceptors.request.use((config) => {
