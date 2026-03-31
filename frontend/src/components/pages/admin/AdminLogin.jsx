@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { setAdmin } from '../../redux/slices/adminSlice';
-import api from '../../lib/axios';
+import { setAdmin } from '../../../redux/slices/adminSlice';
+import api from '../../../lib/axios';
 import { Lock, Mail, ArrowRight, Loader2, ChevronLeft, KeyRound } from 'lucide-react';
 
 export default function AdminLogin() {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import api from '../../lib/axios';
+import api from '../../../lib/axios';
 import {
   ChevronLeft, UploadCloud, FileJson, Rocket,
   CheckCircle2, XCircle, BookOpen, FileUp, Loader2

@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { setTest, setAnswer, setResult } from '../redux/slices/testSlice';
-import api from '../lib/axios';
+import { setTest, setAnswer, setResult } from '../../redux/slices/testSlice';
+import api from '../../lib/axios';
 import {
   Timer, ChevronLeft, ChevronRight, CheckCircle2,
   Loader2, AlertCircle, Home, LayoutGrid

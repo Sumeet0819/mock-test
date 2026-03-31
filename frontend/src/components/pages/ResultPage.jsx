@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { clearTest } from '../redux/slices/testSlice';
+import { clearTest } from '../../redux/slices/testSlice';
 import {
   Trophy, Star, TrendingUp, RotateCcw,
   CheckCircle, XCircle, Printer, Check, X, Circle

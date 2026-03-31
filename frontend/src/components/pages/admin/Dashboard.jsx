@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { logoutAdmin } from '../../redux/slices/adminSlice';
-import api from '../../lib/axios';
+import { logoutAdmin } from '../../../redux/slices/adminSlice';
+import api from '../../../lib/axios';
 import {
   LayoutDashboard, Upload, LogOut, Trash2, Loader2,
   FileText, HelpCircle, Clock, Inbox, Plus

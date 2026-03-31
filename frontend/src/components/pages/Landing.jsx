@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { setUser } from '../redux/slices/authSlice';
-import { setTest } from '../redux/slices/testSlice';
-import api from '../lib/axios';
+import { setUser } from '../../redux/slices/authSlice';
+import { setTest } from '../../redux/slices/testSlice';
+import api from '../../lib/axios';
 import {
   Sparkles, Clock, Calendar, ArrowRight,
   Loader2, Inbox, User, ShieldCheck, BookOpen
