@@ -1,5 +1,5 @@
 import React from 'react';
-import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
 
@@ -13,7 +13,7 @@ import Upload from './pages/admin/Upload';
 function App() {
   return (
     <Provider store={store}>
-      <HashRouter>
+      
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/test/:id" element={<TestPage />} />
@@ -23,7 +23,6 @@ function App() {
           <Route path="/admin/upload" element={<Upload />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
-      </HashRouter>
     </Provider>
   );
 }
