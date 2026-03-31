@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setAdmin } from '../../../redux/slices/adminSlice';
 import api from '../../../lib/axios';
@@ -107,9 +107,9 @@ export default function AdminLogin() {
 
         {/* Back link */}
         <div style={{ textAlign: 'center', marginTop: 28 }}>
-          <a href="/" className="btn btn-ghost btn-sm" style={{ display: 'inline-flex' }}>
+          <Link to="/" className="btn btn-ghost btn-sm" style={{ display: 'inline-flex' }}>
             <ChevronLeft size={14} /> Back to platform
-          </a>
+          </Link>
         </div>
       </div>
     </div>

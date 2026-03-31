@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../../redux/slices/authSlice';
 import { setTest } from '../../redux/slices/testSlice';
@@ -167,9 +167,9 @@ export default function Landing() {
           style={{ textAlign: 'center', marginTop: 56, fontSize: 13, color: 'var(--text-3)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
           <ShieldCheck size={14} />
           Admin?{' '}
-          <a href="/admin/login" style={{ color: 'var(--accent-2)', textDecoration: 'underline', textUnderlineOffset: 3 }}>
+          <Link to="/admin/login" style={{ color: 'var(--accent-2)', textDecoration: 'underline', textUnderlineOffset: 3 }}>
             Login here
-          </a>
+          </Link>
         </div>
       </div>
     </div>
