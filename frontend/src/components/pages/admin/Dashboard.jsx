@@ -16,6 +16,8 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(null);
   const [error, setError] = useState('');
+  const [results, setResults] = useState(null);
+  const [loadingResults, setLoadingResults] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated) { navigate('/admin/login'); return; }
@@ -38,6 +40,19 @@ export default function Dashboard() {
       setTests(prev => prev.filter(t => t._id !== id));
     } catch { setError('Failed to delete'); }
     finally { setDeleting(null); }
+  };
+
+  const handleViewResults = async (testId) => {
+    setLoadingResults(true);
+    setResults(null);
+    try {
+      const res = await api.get(`/admin/test/${testId}/results`);
+      setResults({ testId, attempts: res.data });
+    } catch {
+      setError('Failed to fetch results');
+    } finally {
+      setLoadingResults(false);
+    }
   };
 
   const handleLogout = () => { dispatch(logoutAdmin()); navigate('/admin/login'); };
@@ -112,11 +127,11 @@ export default function Dashboard() {
               {/* Table Header */}
               <div style={{
                 display: 'grid',
-                gridTemplateColumns: '1fr 110px 110px 130px 100px',
+                gridTemplateColumns: '1fr 110px 110px 130px 120px 100px',
                 padding: '14px 28px',
                 borderBottom: '1px solid var(--border)',
               }}>
-                {['Title', 'Questions', 'Duration', 'Created', ''].map(h => (
+                {['Title', 'Questions', 'Duration', 'Created', 'Actions', ''].map(h => (
                   <div key={h} className="section-label">{h}</div>
                 ))}
               </div>
@@ -127,7 +142,7 @@ export default function Dashboard() {
                   key={test._id}
                   style={{
                     display: 'grid',
-                    gridTemplateColumns: '1fr 110px 110px 130px 100px',
+                    gridTemplateColumns: '1fr 110px 110px 130px 120px 100px',
                     padding: '18px 28px',
                     borderBottom: i < tests.length - 1 ? '1px solid var(--border)' : 'none',
                     alignItems: 'center',
@@ -146,6 +161,15 @@ export default function Dashboard() {
                   <div style={{ fontSize: 13, color: 'var(--text-3)' }}>
                     {new Date(test.createdAt).toLocaleDateString()}
                   </div>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <button
+                      className="btn btn-ghost"
+                      onClick={() => handleViewResults(test._id)}
+                      disabled={loadingResults}
+                    >
+                      {loadingResults ? <Loader2 size={13} className="spin" /> : 'View Results'}
+                    </button>
+                  </div>
                   <div>
                     <button
                       className="btn btn-danger-ghost"
@@ -163,6 +187,50 @@ export default function Dashboard() {
             </div>
           )}
         </div>
+
+        {/* ── Results ──────────────────────────────────── */}
+        {results && (
+          <div className="anim-fade-up delay-3" style={{ marginTop: 40 }}>
+            <div className="card" style={{ overflow: 'hidden' }}>
+              <div style={{ padding: '20px 28px', borderBottom: '1px solid var(--border)' }}>
+                <h3 style={{ fontSize: '1.2rem', fontWeight: 700 }}>Test Results</h3>
+                <p style={{ fontSize: 14, color: 'var(--text-3)', marginTop: 4 }}>
+                  {results.attempts.length} attempt{results.attempts.length !== 1 ? 's' : ''}
+                </p>
+              </div>
+              {results.attempts.length === 0 ? (
+                <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-3)' }}>
+                  No attempts yet
+                </div>
+              ) : (
+                <div style={{ padding: '0 28px 28px' }}>
+                  {results.attempts.map((attempt, i) => (
+                    <div
+                      key={i}
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        padding: '16px 0',
+                        borderBottom: i < results.attempts.length - 1 ? '1px solid var(--border)' : 'none',
+                      }}
+                    >
+                      <div>
+                        <div style={{ fontWeight: 600 }}>{attempt.name}</div>
+                        <div style={{ fontSize: 12, color: 'var(--text-3)' }}>
+                          Submitted: {new Date(attempt.submittedAt).toLocaleString()}
+                        </div>
+                      </div>
+                      <div style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--success)' }}>
+                        {attempt.score} marks
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

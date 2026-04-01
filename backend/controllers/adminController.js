@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const Admin = require('../models/Admin');
 const Test = require('../models/Test');
+const UserAttempt = require('../models/UserAttempt');
 
 // POST /admin/login
 const loginAdmin = async (req, res) => {
@@ -74,4 +75,15 @@ const deleteTest = async (req, res) => {
   }
 };
 
-module.exports = { loginAdmin, uploadTest, getTests, deleteTest };
+// GET /admin/test/:id/results
+const getTestResults = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const attempts = await UserAttempt.find({ testId: id }).select('name score submittedAt').sort({ submittedAt: -1 });
+    res.json(attempts);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
+module.exports = { loginAdmin, uploadTest, getTests, deleteTest, getTestResults };
