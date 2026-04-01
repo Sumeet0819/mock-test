@@ -62,77 +62,72 @@ export default function Dashboard() {
     : 0;
 
   return (
-    <div className="page-bg" style={{ minHeight: '100vh' }}>
-      <div style={{ maxWidth: 960, margin: '0 auto', padding: '48px 24px 80px' }}>
+    <div className="min-h-screen w-full bg-slate-950 text-slate-50 font-sans antialiased bg-[image:radial-gradient(ellipse_80%_60%_at_10%_-10%,rgba(99,102,241,0.13)_0%,transparent_55%),radial-gradient(ellipse_60%_50%_at_90%_100%,rgba(167,139,250,0.08)_0%,transparent_55%)]">
+      <div className="max-w-[960px] mx-auto py-12 pb-20 px-6">
 
         {/* ── Header ───────────────────────────────────── */}
-        <div className="anim-fade-up" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap', marginBottom: 44 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <div style={{ width: 48, height: 48, borderRadius: 14, background: 'var(--accent-dim)', border: '1px solid rgba(124,111,247,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <LayoutDashboard size={22} color="var(--accent-2)" />
+        <div className="flex items-center justify-between gap-4 flex-wrap mb-11">
+          <div className="flex items-center gap-3.5">
+            <div className="w-12 h-12 rounded-[14px] bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
+              <LayoutDashboard size={22} color="#a78bfa" />
             </div>
             <div>
-              <h1 style={{ fontSize: '1.7rem', fontWeight: 900, letterSpacing: '-0.02em' }}>Dashboard</h1>
-              <p style={{ fontSize: 13, color: 'var(--text-3)', marginTop: 2 }}>Manage all uploaded tests</p>
+              <h1 className="text-[1.7rem] font-black tracking-[-0.02em]">Dashboard</h1>
+              <p className="text-[13px] text-slate-500 mt-0.5">Manage all uploaded tests</p>
             </div>
           </div>
-          <div style={{ display: 'flex', gap: 12 }}>
-            <button className="btn btn-primary" onClick={() => navigate('/admin/upload')}>
+          <div className="flex gap-3">
+            <button className="inline-flex items-center justify-center gap-[8px] font-semibold text-[14px] rounded-[16px] px-[24px] py-[12px] whitespace-nowrap bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/25 transition-all duration-200 hover:from-indigo-600 hover:to-purple-700 hover:shadow-xl hover:shadow-indigo-500/25 hover:-translate-y-[1px] active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed" onClick={() => navigate('/admin/upload')}>
               <Plus size={16} /> Upload Test
             </button>
-            <button className="btn btn-ghost" onClick={handleLogout}>
+            <button className="inline-flex items-center justify-center gap-[8px] font-semibold text-[14px] border-[1.5px] border-white/10 rounded-[16px] px-[24px] py-[12px] whitespace-nowrap bg-transparent text-slate-400 transition-all hover:bg-indigo-500/10 hover:border-indigo-500/30 hover:text-violet-400" onClick={handleLogout}>
               <LogOut size={15} /> Logout
             </button>
           </div>
         </div>
 
         {/* ── Stats ────────────────────────────────────── */}
-        <div className="anim-fade-up delay-1" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 40 }}>
+        <div className="grid grid-cols-3 gap-4 mb-10">
           {[
-            { label: 'Total Tests', value: tests.length, Icon: FileText, color: 'var(--accent-2)', bg: 'var(--accent-dim)' },
-            { label: 'Total Questions', value: tests.reduce((a, t) => a + t.questionCount, 0), Icon: HelpCircle, color: 'var(--success)', bg: 'var(--success-dim)' },
-            { label: 'Avg Duration', value: tests.length ? `${avgDuration}m` : '—', Icon: Clock, color: 'var(--warning)', bg: 'var(--warning-dim)' },
+            { label: 'Total Tests', value: tests.length, Icon: FileText, color: 'text-violet-400', bg: 'bg-indigo-500/10' },
+            { label: 'Total Questions', value: tests.reduce((a, t) => a + t.questionCount, 0), Icon: HelpCircle, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
+            { label: 'Avg Duration', value: tests.length ? `${avgDuration}m` : '—', Icon: Clock, color: 'text-amber-400', bg: 'bg-amber-500/10' },
           ].map(s => (
-            <div key={s.label} className="card" style={{ padding: '24px 24px' }}>
-              <div style={{ width: 40, height: 40, borderRadius: 12, background: s.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
-                <s.Icon size={20} color={s.color} />
+            <div key={s.label} className="bg-slate-900 border border-white/10 rounded-[24px] shadow-2xl shadow-black/40 p-6">
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-4 ${s.bg}`}>
+                <s.Icon size={20} className={s.color} />
               </div>
-              <div style={{ fontSize: '2rem', fontWeight: 900, lineHeight: 1, color: s.color, marginBottom: 6 }}>{s.value}</div>
-              <div style={{ fontSize: 13, color: 'var(--text-3)' }}>{s.label}</div>
+              <div className={`text-[2rem] font-black leading-none mb-1.5 ${s.color}`}>{s.value}</div>
+              <div className="text-[13px] text-slate-500">{s.label}</div>
             </div>
           ))}
         </div>
 
         {/* ── Table ────────────────────────────────────── */}
-        <div className="anim-fade-up delay-2">
-          {error && <div className="alert alert-danger" style={{ marginBottom: 16 }}>{error}</div>}
+        <div>
+          {error && <div className="flex items-start gap-[10px] px-[18px] py-[14px] rounded-[16px] text-[14px] leading-[1.5] bg-red-500/10 text-red-400 border border-red-500/20 mb-4">{error}</div>}
 
           {loading ? (
-            <div style={{ display: 'flex', justifyContent: 'center', padding: '80px 0' }}>
-              <Loader2 size={36} className="spin" color="var(--accent)" />
+            <div className="flex justify-center py-20">
+              <Loader2 size={36} className="animate-spin" color="#6366f1" />
             </div>
           ) : tests.length === 0 ? (
-            <div className="card" style={{ padding: '80px 40px', textAlign: 'center' }}>
-              <div style={{ width: 64, height: 64, borderRadius: 18, background: 'var(--bg-card-2)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
-                <Inbox size={28} color="var(--text-3)" />
+            <div className="bg-slate-900 border border-white/10 rounded-[24px] shadow-2xl shadow-black/40 py-20 px-10 text-center">
+              <div className="w-16 h-16 rounded-[18px] bg-slate-800 border border-white/10 flex items-center justify-center mx-auto mb-5">
+                <Inbox size={28} color="#64748b" />
               </div>
-              <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 8 }}>No tests yet</div>
-              <div style={{ fontSize: 14, color: 'var(--text-2)', marginBottom: 28 }}>Upload your first test to get started.</div>
-              <button className="btn btn-primary" onClick={() => navigate('/admin/upload')}>
+              <div className="font-bold text-lg mb-2">No tests yet</div>
+              <div className="text-sm text-slate-400 mb-7">Upload your first test to get started.</div>
+              <button className="inline-flex items-center justify-center gap-[8px] font-semibold text-[14px] rounded-[16px] px-[24px] py-[12px] whitespace-nowrap bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/25 transition-all duration-200 hover:from-indigo-600 hover:to-purple-700 hover:shadow-xl hover:shadow-indigo-500/25 hover:-translate-y-[1px] active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed" onClick={() => navigate('/admin/upload')}>
                 <Upload size={16} /> Upload Test
               </button>
             </div>
           ) : (
-            <div className="card" style={{ overflow: 'hidden' }}>
+            <div className="bg-slate-900 border border-white/10 rounded-[24px] shadow-2xl shadow-black/40 overflow-hidden">
               {/* Table Header */}
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 110px 110px 130px 120px 100px',
-                padding: '14px 28px',
-                borderBottom: '1px solid var(--border)',
-              }}>
+              <div className="grid grid-cols-[1fr_110px_110px_130px_120px_100px] py-3.5 px-7 border-b border-white/10">
                 {['Title', 'Questions', 'Duration', 'Created', 'Actions', ''].map(h => (
-                  <div key={h} className="section-label">{h}</div>
+                  <div key={h} className="text-[11px] font-bold tracking-[0.1em] uppercase text-slate-500">{h}</div>
                 ))}
               </div>
 
@@ -140,44 +135,35 @@ export default function Dashboard() {
               {tests.map((test, i) => (
                 <div
                   key={test._id}
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 110px 110px 130px 120px 100px',
-                    padding: '18px 28px',
-                    borderBottom: i < tests.length - 1 ? '1px solid var(--border)' : 'none',
-                    alignItems: 'center',
-                    transition: 'background 0.15s',
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
-                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                  className={`grid grid-cols-[1fr_110px_110px_130px_120px_100px] py-4.5 px-7 items-center transition-[background] duration-150 hover:bg-white/5 ${i < tests.length - 1 ? 'border-b border-white/10' : ''}`}
                 >
-                  <div style={{ fontWeight: 600, fontSize: 15 }}>{test.title}</div>
+                  <div className="font-semibold text-[15px]">{test.title}</div>
                   <div>
-                    <span className="chip chip-accent">{test.questionCount} Q</span>
+                    <span className="inline-flex items-center gap-[6px] px-[14px] py-[5px] rounded-full text-[12px] font-semibold tracking-[0.02em] bg-indigo-500/10 text-violet-400">{test.questionCount} Q</span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 14, color: 'var(--text-2)' }}>
+                  <div className="flex items-center gap-1.5 text-sm text-slate-400">
                     <Clock size={13} /> {test.duration} min
                   </div>
-                  <div style={{ fontSize: 13, color: 'var(--text-3)' }}>
+                  <div className="text-[13px] text-slate-500">
                     {new Date(test.createdAt).toLocaleDateString()}
                   </div>
-                  <div style={{ display: 'flex', gap: 8 }}>
+                  <div className="flex gap-2">
                     <button
-                      className="btn btn-ghost"
+                      className="inline-flex items-center justify-center gap-[8px] font-semibold text-[13px] border-[1.5px] border-white/10 rounded-[10px] px-[16px] py-[8px] whitespace-nowrap bg-transparent text-slate-400 transition-all hover:bg-indigo-500/10 hover:border-indigo-500/30 hover:text-violet-400"
                       onClick={() => handleViewResults(test._id)}
                       disabled={loadingResults}
                     >
-                      {loadingResults ? <Loader2 size={13} className="spin" /> : 'View Results'}
+                      {loadingResults ? <Loader2 size={13} className="animate-spin" /> : 'View Results'}
                     </button>
                   </div>
                   <div>
                     <button
-                      className="btn btn-danger-ghost"
+                      className="inline-flex items-center justify-center gap-[8px] font-semibold text-[13px] border-[1.5px] border-red-500/25 rounded-[10px] px-[16px] py-[8px] whitespace-nowrap bg-transparent text-red-400 transition-all hover:bg-red-500/10 hover:border-red-500/50"
                       onClick={() => handleDelete(test._id)}
                       disabled={deleting === test._id}
                     >
                       {deleting === test._id
-                        ? <Loader2 size={13} className="spin" />
+                        ? <Loader2 size={13} className="animate-spin" />
                         : <Trash2 size={13} />}
                       Delete
                     </button>
@@ -190,38 +176,32 @@ export default function Dashboard() {
 
         {/* ── Results ──────────────────────────────────── */}
         {results && (
-          <div className="anim-fade-up delay-3" style={{ marginTop: 40 }}>
-            <div className="card" style={{ overflow: 'hidden' }}>
-              <div style={{ padding: '20px 28px', borderBottom: '1px solid var(--border)' }}>
-                <h3 style={{ fontSize: '1.2rem', fontWeight: 700 }}>Test Results</h3>
-                <p style={{ fontSize: 14, color: 'var(--text-3)', marginTop: 4 }}>
+          <div className="mt-10">
+            <div className="bg-slate-900 border border-white/10 rounded-[24px] shadow-2xl shadow-black/40 overflow-hidden">
+              <div className="py-5 px-7 border-b border-white/10">
+                <h3 className="text-[1.2rem] font-bold">Test Results</h3>
+                <p className="text-[14px] text-slate-500 mt-1">
                   {results.attempts.length} attempt{results.attempts.length !== 1 ? 's' : ''}
                 </p>
               </div>
               {results.attempts.length === 0 ? (
-                <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-3)' }}>
+                <div className="p-10 text-center text-slate-500">
                   No attempts yet
                 </div>
               ) : (
-                <div style={{ padding: '0 28px 28px' }}>
+                <div className="px-7 pb-7 pt-0">
                   {results.attempts.map((attempt, i) => (
                     <div
                       key={i}
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        padding: '16px 0',
-                        borderBottom: i < results.attempts.length - 1 ? '1px solid var(--border)' : 'none',
-                      }}
+                      className={`flex justify-between items-center py-4 ${i < results.attempts.length - 1 ? 'border-b border-white/10' : ''}`}
                     >
                       <div>
-                        <div style={{ fontWeight: 600 }}>{attempt.name}</div>
-                        <div style={{ fontSize: 12, color: 'var(--text-3)' }}>
+                        <div className="font-semibold">{attempt.name}</div>
+                        <div className="text-xs text-slate-500">
                           Submitted: {new Date(attempt.submittedAt).toLocaleString()}
                         </div>
                       </div>
-                      <div style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--success)' }}>
+                      <div className="text-[1.2rem] font-bold text-emerald-400">
                         {attempt.score} marks
                       </div>
                     </div>

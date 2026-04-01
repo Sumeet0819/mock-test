@@ -41,51 +41,38 @@ export default function Landing() {
   };
 
   return (
-    <div className="page-bg" style={{ minHeight: '100vh' }}>
-      <div style={{ maxWidth: 680, margin: '0 auto', padding: '80px 24px 80px' }}>
+    <div className="min-h-screen w-full bg-slate-950 text-slate-50 font-sans antialiased bg-[image:radial-gradient(ellipse_80%_60%_at_10%_-10%,rgba(99,102,241,0.13)_0%,transparent_55%),radial-gradient(ellipse_60%_50%_at_90%_100%,rgba(167,139,250,0.08)_0%,transparent_55%)]">
+      <div className="max-w-[680px] mx-auto py-20 px-6">
 
         {/* ── Hero ────────────────────────────────── */}
-        <div className="anim-fade-up" style={{ textAlign: 'center', marginBottom: 56 }}>
-          <div className="chip chip-accent" style={{ marginBottom: 20 }}>
+        <div className="text-center mb-14">
+          <div className="inline-flex items-center gap-[6px] px-[14px] py-[5px] rounded-full text-[12px] font-semibold tracking-[0.02em] bg-indigo-500/10 text-violet-400 mb-5">
             <Sparkles size={13} /> Open Source Mock Tests
           </div>
 
-          <h1 style={{
-            fontSize: 'clamp(2.4rem, 6vw, 3.5rem)',
-            fontWeight: 900,
-            lineHeight: 1.1,
-            letterSpacing: '-0.03em',
-            marginBottom: 16,
-            background: 'linear-gradient(135deg, #f1f1ff 30%, #a78bfa 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}>
+          <h1 className="text-[clamp(2.4rem,6vw,3.5rem)] font-black leading-[1.1] tracking-[-0.03em] mb-4 bg-clip-text text-transparent bg-gradient-to-br from-slate-50 to-violet-400">
             MockTest Platform
           </h1>
 
-          <p style={{ fontSize: 17, color: 'var(--text-2)', maxWidth: 420, margin: '0 auto', lineHeight: 1.7 }}>
+          <p className="text-[17px] text-slate-400 max-w-[420px] mx-auto leading-relaxed">
             Test your knowledge, get instant results, and track your progress — no signup needed.
           </p>
         </div>
 
         {/* ── Name Card ───────────────────────────── */}
-        <div className="card anim-fade-up delay-1" style={{ padding: '36px 40px', marginBottom: 32 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
-            <div style={{
-              width: 36, height: 36, borderRadius: 10,
-              background: 'var(--accent-dim)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center'
-            }}>
-              <User size={18} color="var(--accent-2)" />
+        <div className="bg-slate-900 border border-white/10 rounded-[24px] shadow-2xl shadow-black/40 py-9 px-10 mb-8">
+          <div className="flex items-center gap-2.5 mb-5">
+            <div className="w-9 h-9 rounded-[10px] bg-indigo-500/10 flex items-center justify-center">
+              <User size={18} color="#a78bfa" />
             </div>
             <div>
-              <div style={{ fontWeight: 700, fontSize: 16 }}>Enter your name</div>
-              <div style={{ fontSize: 13, color: 'var(--text-3)' }}>Pick a test below to start immediately</div>
+              <div className="font-bold text-base">Enter your name</div>
+              <div className="text-[13px] text-slate-500">Pick a test below to start immediately</div>
             </div>
           </div>
 
           <input
-            className="input"
+            className="w-full bg-white/5 border-[1.5px] border-white/10 text-slate-50 rounded-[16px] px-[18px] py-[14px] text-[15px] outline-none transition-all placeholder:text-slate-500 focus:border-indigo-500 focus:bg-indigo-500/10 focus:ring-4 focus:ring-indigo-500/10"
             type="text"
             placeholder="e.g. Alex Johnson"
             value={name}
@@ -94,65 +81,58 @@ export default function Landing() {
           />
 
           {error && (
-            <div style={{ marginTop: 10, fontSize: 13, color: 'var(--danger)', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <div className="mt-2.5 text-[13px] text-red-400 flex items-center gap-1.5">
               {error}
             </div>
           )}
         </div>
 
         {/* ── Tests List ──────────────────────────── */}
-        <div className="anim-fade-up delay-2">
-          <div className="section-label" style={{ marginBottom: 16 }}>
-            <BookOpen size={11} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 6 }} />
+        <div>
+          <div className="text-[11px] font-bold tracking-[0.1em] uppercase text-slate-500 mb-4">
+            <BookOpen size={11} className="inline align-middle mr-1.5" />
             Available Tests
           </div>
 
           {fetchingTests ? (
-            <div style={{ display: 'flex', justifyContent: 'center', padding: '56px 0' }}>
-              <Loader2 size={32} className="spin" color="var(--accent)" />
+            <div className="flex justify-center py-14">
+              <Loader2 size={32} className="animate-spin" color="#6366f1" />
             </div>
           ) : tests.length === 0 ? (
-            <div className="card" style={{ padding: '56px 40px', textAlign: 'center' }}>
-              <div style={{
-                width: 64, height: 64, borderRadius: 18,
-                background: 'var(--bg-card-2)', border: '1px solid var(--border)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                margin: '0 auto 20px'
-              }}>
-                <Inbox size={28} color="var(--text-3)" />
+            <div className="bg-slate-900 border border-white/10 rounded-[24px] shadow-2xl shadow-black/40 py-14 px-10 text-center">
+              <div className="w-16 h-16 rounded-[18px] bg-slate-800 border border-white/10 flex items-center justify-center mx-auto mb-5">
+                <Inbox size={28} color="#64748b" />
               </div>
-              <div style={{ fontWeight: 600, marginBottom: 8 }}>No tests available yet</div>
-              <div style={{ fontSize: 14, color: 'var(--text-2)' }}>Ask an admin to upload a test to get started.</div>
+              <div className="font-semibold mb-2">No tests available yet</div>
+              <div className="text-sm text-slate-400">Ask an admin to upload a test to get started.</div>
             </div>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+             <div className="flex flex-col gap-3.5">
               {tests.map((test, i) => (
                 <div
                   key={test._id}
-                  className={`card card-hover anim-fade-up delay-${Math.min(i + 3, 4)}`}
-                  style={{ padding: '24px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}
+                  className="bg-slate-900 border border-white/10 rounded-[24px] shadow-2xl shadow-black/40 transition-all duration-200 hover:border-indigo-500/30 hover:shadow-indigo-500/20 hover:ring-1 hover:ring-indigo-500/30 hover:-translate-y-[2px] py-6 px-7 flex items-center justify-between gap-4"
                 >
-                  <div style={{ minWidth: 0 }}>
-                    <div style={{ fontWeight: 700, fontSize: 16, marginBottom: 8, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  <div className="min-w-0">
+                    <div className="font-bold text-base mb-2 whitespace-nowrap overflow-hidden text-ellipsis">
                       {test.title}
                     </div>
-                    <div style={{ display: 'flex', gap: 18, fontSize: 13, color: 'var(--text-2)' }}>
-                      <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                    <div className="flex gap-[18px] text-[13px] text-slate-400">
+                      <span className="flex items-center gap-[5px]">
                         <Clock size={13} /> {test.duration} min
                       </span>
-                      <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                      <span className="flex items-center gap-[5px]">
                         <Calendar size={13} /> {new Date(test.createdAt).toLocaleDateString()}
                       </span>
                     </div>
                   </div>
                   <button
-                    className="btn btn-primary"
+                    className="inline-flex items-center justify-center gap-[8px] font-semibold text-[14px] rounded-[16px] px-[24px] py-[12px] whitespace-nowrap bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/25 transition-all duration-200 hover:from-indigo-600 hover:to-purple-700 hover:shadow-xl hover:shadow-indigo-500/25 hover:-translate-y-[1px] active:translate-y-0 shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
                     onClick={() => handleStart(test._id)}
                     disabled={loading}
-                    style={{ flexShrink: 0 }}
                   >
                     {loading
-                      ? <Loader2 size={15} className="spin" />
+                      ? <Loader2 size={15} className="animate-spin" />
                       : <><span>Start</span><ArrowRight size={15} /></>
                     }
                   </button>
@@ -163,11 +143,10 @@ export default function Landing() {
         </div>
 
         {/* ── Footer ──────────────────────────────── */}
-        <div className="anim-fade-up delay-4"
-          style={{ textAlign: 'center', marginTop: 56, fontSize: 13, color: 'var(--text-3)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+        <div className="text-center mt-14 text-[13px] text-slate-500 flex items-center justify-center gap-1.5">
           <ShieldCheck size={14} />
           Admin?{' '}
-          <Link to="/admin/login" style={{ color: 'var(--accent-2)', textDecoration: 'underline', textUnderlineOffset: 3 }}>
+          <Link to="/admin/login" className="text-violet-400 underline underline-offset-4">
             Login here
           </Link>
         </div>

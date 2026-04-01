@@ -27,36 +27,31 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="page-bg" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 24px' }}>
-      <div className="anim-scale-in" style={{ width: '100%', maxWidth: 440 }}>
+    <div className="min-h-screen w-full bg-slate-950 text-slate-50 font-sans antialiased bg-[image:radial-gradient(ellipse_80%_60%_at_10%_-10%,rgba(99,102,241,0.13)_0%,transparent_55%),radial-gradient(ellipse_60%_50%_at_90%_100%,rgba(167,139,250,0.08)_0%,transparent_55%)] flex items-center justify-center py-10 px-6">
+      <div className="w-full max-w-[440px]">
 
         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: 40 }}>
-          <div style={{
-            width: 68, height: 68, borderRadius: 20,
-            background: 'var(--accent-dim)', border: '1px solid rgba(124,111,247,0.2)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            margin: '0 auto 20px'
-          }}>
-            <KeyRound size={30} color="var(--accent-2)" />
+        <div className="text-center mb-10">
+          <div className="w-[68px] h-[68px] rounded-[20px] bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mx-auto mb-5">
+            <KeyRound size={30} color="#a78bfa" />
           </div>
-          <h1 style={{ fontSize: '1.9rem', fontWeight: 900, letterSpacing: '-0.03em', marginBottom: 8 }}>
+          <h1 className="text-[1.9rem] font-black tracking-[-0.03em] mb-2">
             Admin Login
           </h1>
-          <p style={{ fontSize: 15, color: 'var(--text-2)' }}>
+          <p className="text-[15px] text-slate-400">
             Access the panel to upload and manage tests
           </p>
         </div>
 
         {/* Form Card */}
-        <div className="card" style={{ padding: '40px 40px' }}>
-          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
+        <div className="bg-slate-900 border border-white/10 rounded-[24px] shadow-2xl shadow-black/40 py-10 px-10">
+          <form onSubmit={handleLogin} className="flex flex-col gap-[22px]">
             <div>
-              <label className="label">
+              <label className="flex items-center gap-[6px] text-[13px] font-medium text-slate-400 mb-[8px]">
                 <Mail size={13} /> Email address
               </label>
               <input
-                className="input"
+                className="w-full bg-white/5 border-[1.5px] border-white/10 text-slate-50 rounded-[16px] px-[18px] py-[14px] text-[15px] outline-none transition-all placeholder:text-slate-500 focus:border-indigo-500 focus:bg-indigo-500/10 focus:ring-4 focus:ring-indigo-500/10"
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
@@ -65,11 +60,11 @@ export default function AdminLogin() {
             </div>
 
             <div>
-              <label className="label">
+              <label className="flex items-center gap-[6px] text-[13px] font-medium text-slate-400 mb-[8px]">
                 <Lock size={13} /> Password
               </label>
               <input
-                className="input"
+                className="w-full bg-white/5 border-[1.5px] border-white/10 text-slate-50 rounded-[16px] px-[18px] py-[14px] text-[15px] outline-none transition-all placeholder:text-slate-500 focus:border-indigo-500 focus:bg-indigo-500/10 focus:ring-4 focus:ring-indigo-500/10"
                 type="password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
@@ -78,36 +73,35 @@ export default function AdminLogin() {
             </div>
 
             {error && (
-              <div className="alert alert-danger">
+              <div className="flex items-start gap-[10px] px-[18px] py-[14px] rounded-[16px] text-[14px] leading-[1.5] bg-red-500/10 text-red-400 border border-red-500/20">
                 {error}
               </div>
             )}
 
             <button
               type="submit"
-              className="btn btn-primary"
+              className="inline-flex items-center justify-center gap-[8px] font-semibold rounded-[16px] py-[14px] px-[24px] text-[15px] whitespace-nowrap bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/25 transition-all duration-200 hover:from-indigo-600 hover:to-purple-700 hover:shadow-xl hover:shadow-indigo-500/25 hover:-translate-y-[1px] active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed w-full mt-1"
               disabled={loading}
-              style={{ width: '100%', padding: '14px', fontSize: 15, marginTop: 4 }}
             >
-              {loading ? <Loader2 size={16} className="spin" /> : <ArrowRight size={16} />}
+              {loading ? <Loader2 size={16} className="animate-spin" /> : <ArrowRight size={16} />}
               {loading ? 'Signing in…' : 'Sign In'}
             </button>
           </form>
 
           {/* Divider */}
-          <hr className="divider" style={{ margin: '28px 0' }} />
+          <hr className="h-[1px] bg-white/10 border-none m-0 my-7" />
 
-          <div style={{ textAlign: 'center', fontSize: 13, color: 'var(--text-3)' }}>
+          <div className="text-center text-[13px] text-slate-500">
             Default credentials
-            <div style={{ marginTop: 10, padding: '10px 16px', borderRadius: 10, background: 'var(--accent-dim)', color: 'var(--accent-2)', fontFamily: 'monospace', fontSize: 13 }}>
+            <div className="mt-2.5 py-2.5 px-4 rounded-[10px] bg-indigo-500/10 text-violet-400 font-mono text-[13px]">
               admin@mock.test&nbsp;&nbsp;/&nbsp;&nbsp;Admin@123
             </div>
           </div>
         </div>
 
         {/* Back link */}
-        <div style={{ textAlign: 'center', marginTop: 28 }}>
-          <Link to="/" className="btn btn-ghost btn-sm" style={{ display: 'inline-flex' }}>
+        <div className="text-center mt-7">
+          <Link to="/" className="inline-flex items-center justify-center gap-[8px] font-semibold text-[13px] border-[1.5px] border-white/10 rounded-[10px] px-[16px] py-[8px] whitespace-nowrap bg-transparent text-slate-400 transition-all hover:bg-indigo-500/10 hover:border-indigo-500/30 hover:text-violet-400">
             <ChevronLeft size={14} /> Back to platform
           </Link>
         </div>

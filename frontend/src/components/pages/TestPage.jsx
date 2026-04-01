@@ -68,18 +68,18 @@ export default function TestPage() {
   }, [timeLeft === null, handleSubmit]);
 
   if (loading) return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <Loader2 size={36} className="spin" color="var(--accent)" />
+    <div className="min-h-screen flex items-center justify-center">
+      <Loader2 size={36} className="animate-spin" color="#6366f1" />
     </div>
   );
 
   if (error) return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20 }}>
-      <div style={{ width: 56, height: 56, borderRadius: 16, background: 'var(--danger-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <AlertCircle size={26} color="var(--danger)" />
+    <div className="min-h-screen flex flex-col items-center justify-center gap-5">
+      <div className="w-14 h-14 rounded-2xl bg-red-500/10 flex items-center justify-center">
+        <AlertCircle size={26} color="#f87171" />
       </div>
-      <p style={{ color: 'var(--text-2)' }}>{error}</p>
-      <button className="btn btn-ghost" onClick={() => navigate('/')}>
+      <p className="text-slate-400">{error}</p>
+      <button className="inline-flex items-center justify-center gap-[8px] font-semibold text-[14px] border-[1.5px] border-white/10 rounded-[16px] px-[24px] py-[12px] whitespace-nowrap bg-transparent text-slate-400 transition-all hover:bg-indigo-500/10 hover:border-indigo-500/30 hover:text-violet-400" onClick={() => navigate('/')}>
         <Home size={15} /> Go Home
       </button>
     </div>
@@ -93,97 +93,69 @@ export default function TestPage() {
   const mins = Math.floor(timeLeft / 60);
   const secs = timeLeft % 60;
   const isUrgent = timeLeft < 60;
-  const timerColor = timeLeft < 60 ? 'var(--danger)' : timeLeft < 180 ? 'var(--warning)' : 'var(--success)';
+  const timerColor = timeLeft < 60 ? '#f87171' : timeLeft < 180 ? '#fbbf24' : '#34d399';
   const progressPct = ((current + 1) / total) * 100;
 
   return (
-    <div className="page-bg" style={{ minHeight: '100vh', paddingBottom: 64 }}>
+    <div className="min-h-screen w-full bg-slate-950 text-slate-50 font-sans antialiased bg-[image:radial-gradient(ellipse_80%_60%_at_10%_-10%,rgba(99,102,241,0.13)_0%,transparent_55%),radial-gradient(ellipse_60%_50%_at_90%_100%,rgba(167,139,250,0.08)_0%,transparent_55%)] pb-16">
       {/* ── Top Bar ──────────────────────────────────── */}
-      <div style={{ position: 'sticky', top: 0, zIndex: 50, background: 'rgba(8,8,16,0.85)', backdropFilter: 'blur(20px)', borderBottom: '1px solid var(--border)' }}>
-        <div style={{ maxWidth: 800, margin: '0 auto', padding: '0 24px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, height: 64 }}>
+      <div className="sticky top-0 z-50 bg-slate-950/90 backdrop-blur-[20px] border-b border-white/10">
+        <div className="max-w-[800px] mx-auto px-6">
+          <div className="flex items-center justify-between gap-4 h-16">
             {/* Title */}
-            <div style={{ minWidth: 0 }}>
-              <div style={{ fontWeight: 700, fontSize: 15, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            <div className="min-w-0">
+              <div className="font-bold text-[15px] overflow-hidden text-ellipsis whitespace-nowrap">
                 {currentTest.title}
               </div>
-              <div style={{ fontSize: 12, color: 'var(--text-3)', marginTop: 1 }}>
+              <div className="text-xs text-slate-500 mt-[1px]">
                 Hi {user} · Q{current + 1}/{total}
               </div>
             </div>
 
             {/* Timer */}
-            <div style={{
-              display: 'flex', alignItems: 'center', gap: 8,
-              padding: '8px 18px', borderRadius: 12,
-              background: isUrgent ? 'var(--danger-dim)' : 'rgba(255,255,255,0.05)',
-              border: `1px solid ${isUrgent ? 'rgba(248,113,113,0.3)' : 'var(--border)'}`,
-              color: timerColor,
-              fontVariantNumeric: 'tabular-nums',
-              transition: 'all 0.3s',
-            }}>
+            <div className={`flex items-center gap-2 py-2 px-[18px] rounded-xl font-tabular-nums transition-all duration-300 border ${isUrgent ? 'bg-red-500/10 border-red-500/30' : 'bg-white/5 border-white/10'}`}
+              style={{ color: timerColor }}>
               <Timer size={16} />
-              <span style={{ fontFamily: 'monospace', fontSize: 18, fontWeight: 800 }}>
+              <span className="font-mono text-lg font-extrabold">
                 {String(mins).padStart(2,'0')}:{String(secs).padStart(2,'0')}
               </span>
             </div>
           </div>
 
           {/* Progress Bar */}
-          <div style={{ height: 3, background: 'rgba(255,255,255,0.06)', borderRadius: 99, marginBottom: 0 }}>
-            <div style={{
-              height: '100%', borderRadius: 99,
-              width: `${progressPct}%`,
-              background: 'linear-gradient(90deg, var(--accent), var(--accent-2))',
-              transition: 'width 0.4s ease',
-            }} />
+          <div className="h-[3px] bg-white/5 rounded-full mb-0">
+            <div className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-violet-400 transition-[width] duration-400 ease-out"
+              style={{ width: `${progressPct}%` }} />
           </div>
         </div>
       </div>
 
       {/* ── Question ─────────────────────────────────── */}
-      <div style={{ maxWidth: 800, margin: '0 auto', padding: '40px 24px 0' }}>
-        <div className="card anim-scale-in" key={current} style={{ padding: '40px 44px', marginBottom: 24 }}>
-          <div className="chip chip-accent" style={{ marginBottom: 20 }}>
+      <div className="max-w-[800px] mx-auto pt-10 px-6">
+        <div className="bg-slate-900 border border-white/10 rounded-[24px] shadow-2xl shadow-black/40 py-10 px-11 mb-6" key={current}>
+          <div className="inline-flex items-center gap-[6px] px-[14px] py-[5px] rounded-full text-[12px] font-semibold tracking-[0.02em] bg-indigo-500/10 text-violet-400 mb-5">
             Question {current + 1} of {total}
           </div>
 
-          <p style={{ fontSize: 19, fontWeight: 600, lineHeight: 1.6, marginBottom: 36, color: 'var(--text-1)' }}>
+          <p className="text-[19px] font-semibold leading-[1.6] mb-9 text-slate-50">
             {q.question}
           </p>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div className="flex flex-col gap-3">
             {q.options.map((opt, i) => {
               const isSelected = answers[current] === opt;
               return (
                 <button
                   key={i}
                   onClick={() => dispatch(setAnswer({ index: current, answer: opt }))}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: 14,
-                    padding: '16px 20px', borderRadius: 14,
-                    border: `1.5px solid ${isSelected ? 'var(--accent)' : 'rgba(255,255,255,0.07)'}`,
-                    background: isSelected ? 'var(--accent-dim)' : 'rgba(255,255,255,0.025)',
-                    color: isSelected ? 'var(--accent-2)' : 'var(--text-1)',
-                    cursor: 'pointer', textAlign: 'left',
-                    transform: isSelected ? 'translateX(4px)' : 'none',
-                    transition: 'all 0.18s',
-                    fontFamily: 'inherit', fontSize: 15, fontWeight: isSelected ? 600 : 400,
-                  }}
+                  className={`flex items-center gap-3.5 py-4 px-5 rounded-[14px] font-[inherit] text-[15px] text-left cursor-pointer transition-all duration-150 border-[1.5px] ${isSelected ? 'border-indigo-500 bg-indigo-500/10 text-violet-400 translate-x-1 font-semibold' : 'border-white/10 bg-white/5 text-slate-50 font-normal'}`}
                 >
                   {/* Option Letter */}
-                  <span style={{
-                    flexShrink: 0, width: 30, height: 30, borderRadius: 8,
-                    background: isSelected ? 'var(--accent)' : 'rgba(255,255,255,0.06)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 13, fontWeight: 700,
-                    color: isSelected ? 'white' : 'var(--text-3)',
-                    transition: 'all 0.18s',
-                  }}>
+                  <span className={`shrink-0 w-[30px] h-[30px] rounded-lg flex items-center justify-center text-[13px] font-bold transition-all duration-150 ${isSelected ? 'bg-indigo-500 text-white' : 'bg-white/10 text-slate-500'}`}>
                     {String.fromCharCode(65 + i)}
                   </span>
-                  <span style={{ flex: 1 }}>{opt}</span>
-                  {isSelected && <CheckCircle2 size={16} color="var(--accent)" style={{ flexShrink: 0 }} />}
+                  <span className="flex-1">{opt}</span>
+                  {isSelected && <CheckCircle2 size={16} color="#6366f1" className="shrink-0" />}
                 </button>
               );
             })}
@@ -191,49 +163,47 @@ export default function TestPage() {
         </div>
 
         {/* ── Navigation ───────────────────────────────── */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap', marginBottom: 32 }}>
+        <div className="flex items-center justify-between gap-4 flex-wrap mb-8">
           <button
-            className="btn btn-ghost"
+            className="inline-flex items-center justify-center gap-[8px] font-semibold text-[14px] border-[1.5px] border-white/10 rounded-[16px] px-[24px] py-[12px] whitespace-nowrap bg-transparent text-slate-400 transition-all hover:bg-indigo-500/10 hover:border-indigo-500/30 hover:text-violet-400"
             onClick={() => setCurrent(c => Math.max(0, c - 1))}
             disabled={current === 0}
           >
             <ChevronLeft size={16} /> Previous
           </button>
 
-          <span style={{ fontSize: 13, color: 'var(--text-3)' }}>
+          <span className="text-[13px] text-slate-500">
             {answered} of {total} answered
           </span>
 
           {current < total - 1 ? (
-            <button className="btn btn-primary" onClick={() => setCurrent(c => c + 1)}>
+            <button className="inline-flex items-center justify-center gap-[8px] font-semibold text-[14px] rounded-[16px] px-[24px] py-[12px] whitespace-nowrap bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/25 transition-all duration-200 hover:from-indigo-600 hover:to-purple-700 hover:shadow-xl hover:shadow-indigo-500/25 hover:-translate-y-[1px] active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed" onClick={() => setCurrent(c => c + 1)}>
               Next <ChevronRight size={16} />
             </button>
           ) : (
-            <button className="btn btn-primary" onClick={handleSubmit} disabled={submitting}>
-              {submitting ? <Loader2 size={15} className="spin" /> : <CheckCircle2 size={15} />}
+            <button className="inline-flex items-center justify-center gap-[8px] font-semibold text-[14px] rounded-[16px] px-[24px] py-[12px] whitespace-nowrap bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/25 transition-all duration-200 hover:from-indigo-600 hover:to-purple-700 hover:shadow-xl hover:shadow-indigo-500/25 hover:-translate-y-[1px] active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed" onClick={handleSubmit} disabled={submitting}>
+              {submitting ? <Loader2 size={15} className="animate-spin" /> : <CheckCircle2 size={15} />}
               {submitting ? 'Submitting…' : 'Submit Test'}
             </button>
           )}
         </div>
 
         {/* ── Question Navigator ───────────────────────── */}
-        <div className="card" style={{ padding: '24px 28px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-            <LayoutGrid size={14} color="var(--text-3)" />
-            <span className="section-label">Question Navigator</span>
+        <div className="bg-slate-900 border border-white/10 rounded-[24px] shadow-2xl shadow-black/40 py-6 px-7">
+          <div className="flex items-center gap-2 mb-4">
+            <LayoutGrid size={14} color="#606080" />
+            <span className="text-[11px] font-bold tracking-[0.1em] uppercase text-slate-500">Question Navigator</span>
           </div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+          <div className="flex flex-wrap gap-2">
             {currentTest.questions.map((_, i) => (
               <button
                 key={i}
                 onClick={() => setCurrent(i)}
+                className="w-[38px] h-[38px] rounded-[10px] text-[13px] font-bold cursor-pointer transition-all duration-150 font-[inherit]"
                 style={{
-                  width: 38, height: 38, borderRadius: 10,
-                  border: `1.5px solid ${i === current ? 'var(--accent)' : answers[i] ? 'var(--success)' : 'rgba(255,255,255,0.08)'}`,
-                  background: i === current ? 'var(--accent)' : answers[i] ? 'var(--success-dim)' : 'rgba(255,255,255,0.04)',
-                  color: i === current ? 'white' : answers[i] ? 'var(--success)' : 'var(--text-3)',
-                  fontSize: 13, fontWeight: 700, cursor: 'pointer',
-                  transition: 'all 0.15s', fontFamily: 'inherit',
+                  border: `1.5px solid ${i === current ? '#6366f1' : answers[i] ? '#34d399' : 'rgba(255,255,255,0.1)'}`,
+                  background: i === current ? '#6366f1' : answers[i] ? 'rgba(52,211,153,0.12)' : 'rgba(255,255,255,0.05)',
+                  color: i === current ? 'white' : answers[i] ? '#34d399' : '#64748b'
                 }}
               >
                 {i + 1}

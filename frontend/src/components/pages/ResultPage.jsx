@@ -18,12 +18,12 @@ export default function ResultPage() {
   const { score, total, percentage, breakdown } = result;
 
   const grade = percentage >= 90
-    ? { label: 'Excellent!',      Icon: Trophy,     color: '#34d399', bg: 'rgba(52,211,153,0.12)' }
+    ? { label: 'Excellent!',      Icon: Trophy,     color: '#34d399', colorClass: 'text-emerald-400', borderClass: 'border-emerald-500/20', bgClass: 'bg-emerald-500/10' }
     : percentage >= 75
-    ? { label: 'Great Job!',      Icon: Star,       color: '#7c6ff7', bg: 'rgba(124,111,247,0.12)' }
+    ? { label: 'Great Job!',      Icon: Star,       color: '#a78bfa', colorClass: 'text-violet-400', borderClass: 'border-indigo-500/20', bgClass: 'bg-indigo-500/10' }
     : percentage >= 60
-    ? { label: 'Good Pass!',      Icon: TrendingUp,  color: '#fbbf24', bg: 'rgba(251,191,36,0.12)' }
-    : { label: 'Keep Practicing', Icon: RotateCcw,  color: '#f87171', bg: 'rgba(248,113,113,0.12)' };
+    ? { label: 'Good Pass!',      Icon: TrendingUp, color: '#fbbf24', colorClass: 'text-amber-400', borderClass: 'border-amber-500/20', bgClass: 'bg-amber-500/10' }
+    : { label: 'Keep Practicing', Icon: RotateCcw,  color: '#f87171', colorClass: 'text-red-400', borderClass: 'border-red-500/20', bgClass: 'bg-red-500/10' };
 
   const { Icon: GradeIcon } = grade;
 
@@ -32,31 +32,26 @@ export default function ResultPage() {
   const circumference = 2 * Math.PI * 52;
 
   return (
-    <div className="page-bg" style={{ minHeight: '100vh' }}>
-      <div style={{ maxWidth: 720, margin: '0 auto', padding: '64px 24px 96px' }}>
+    <div className="min-h-screen w-full bg-slate-950 text-slate-50 font-sans antialiased bg-[image:radial-gradient(ellipse_80%_60%_at_10%_-10%,rgba(99,102,241,0.13)_0%,transparent_55%),radial-gradient(ellipse_60%_50%_at_90%_100%,rgba(167,139,250,0.08)_0%,transparent_55%)]">
+      <div className="max-w-[720px] mx-auto pt-16 px-6 pb-24">
 
         {/* ── Score Hero ───────────────────────────── */}
-        <div className="anim-fade-up" style={{ textAlign: 'center', marginBottom: 48 }}>
-          <div style={{
-            width: 72, height: 72, borderRadius: 22,
-            background: grade.bg, border: `1px solid ${grade.color}33`,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            margin: '0 auto 20px'
-          }}>
-            <GradeIcon size={34} color={grade.color} />
+        <div className="text-center mb-12">
+          <div className={`w-[72px] h-[72px] rounded-[22px] flex items-center justify-center mx-auto mb-5 border ${grade.borderClass} ${grade.bgClass}`}>
+            <GradeIcon size={34} className={grade.colorClass} />
           </div>
 
-          <h1 style={{ fontSize: '2.4rem', fontWeight: 900, letterSpacing: '-0.03em', color: grade.color, marginBottom: 8 }}>
+          <h1 className={`text-[2.4rem] font-black tracking-[-0.03em] mb-2 ${grade.colorClass}`}>
             {grade.label}
           </h1>
-          <p style={{ fontSize: 16, color: 'var(--text-2)' }}>
-            Well done, <strong style={{ color: 'var(--text-1)' }}>{user}</strong>!
+          <p className="text-base text-slate-400">
+            Well done, <strong className="text-slate-50">{user}</strong>!
           </p>
 
           {/* SVG Ring */}
-          <div style={{ display: 'flex', justifyContent: 'center', margin: '40px 0' }}>
-            <div style={{ position: 'relative', width: 160, height: 160 }}>
-              <svg viewBox="0 0 120 120" style={{ width: '100%', height: '100%', transform: 'rotate(-90deg)' }}>
+          <div className="flex justify-center my-10">
+            <div className="relative w-40 h-40">
+              <svg viewBox="0 0 120 120" className="w-full h-full -rotate-90">
                 <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="10" />
                 <circle
                   cx="60" cy="60" r="52" fill="none"
@@ -64,83 +59,78 @@ export default function ResultPage() {
                   strokeLinecap="round"
                   strokeDasharray={circumference}
                   strokeDashoffset={circumference * (1 - percentage / 100)}
-                  style={{ transition: 'stroke-dashoffset 1.2s cubic-bezier(0.16,1,0.3,1)' }}
+                  className="transition-[stroke-dashoffset] duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)]"
                 />
               </svg>
-              <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                <span style={{ fontSize: '2rem', fontWeight: 900, lineHeight: 1, color: grade.color }}>{percentage}%</span>
-                <span style={{ fontSize: 13, color: 'var(--text-3)', marginTop: 4 }}>{score}/{total} correct</span>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className={`text-[2rem] font-black leading-none ${grade.colorClass}`}>{percentage}%</span>
+                <span className="text-[13px] text-slate-500 mt-1">{score}/{total} correct</span>
               </div>
             </div>
           </div>
 
           {/* Stats Row */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14, maxWidth: 380, margin: '0 auto' }}>
+          <div className="grid grid-cols-3 gap-3.5 max-w-[380px] mx-auto">
             {[
-              { label: 'Correct', value: score, Icon: CheckCircle, color: 'var(--success)', bg: 'var(--success-dim)' },
-              { label: 'Wrong', value: total - score, Icon: XCircle, color: 'var(--danger)', bg: 'var(--danger-dim)' },
-              { label: 'Total', value: total, Icon: Circle, color: 'var(--accent-2)', bg: 'var(--accent-dim)' },
+              { label: 'Correct', value: score, Icon: CheckCircle, colorClass: 'text-emerald-400', bgClass: 'bg-emerald-500/10' },
+              { label: 'Wrong', value: total - score, Icon: XCircle, colorClass: 'text-red-400', bgClass: 'bg-red-500/10' },
+              { label: 'Total', value: total, Icon: Circle, colorClass: 'text-violet-400', bgClass: 'bg-indigo-500/10' },
             ].map(s => (
-              <div key={s.label} className="card" style={{ padding: '20px 16px', textAlign: 'center' }}>
-                <div style={{ width: 36, height: 36, borderRadius: 10, background: s.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 10px' }}>
-                  <s.Icon size={18} color={s.color} />
+              <div key={s.label} className="bg-slate-900 border border-white/10 rounded-[24px] shadow-2xl shadow-black/40 py-5 px-4 text-center">
+                <div className={`w-9 h-9 rounded-[10px] flex items-center justify-center mx-auto mb-2.5 ${s.bgClass}`}>
+                  <s.Icon size={18} className={s.colorClass} />
                 </div>
-                <div style={{ fontSize: '1.6rem', fontWeight: 800, color: s.color, lineHeight: 1 }}>{s.value}</div>
-                <div style={{ fontSize: 12, color: 'var(--text-3)', marginTop: 4 }}>{s.label}</div>
+                <div className={`text-[1.6rem] font-extrabold leading-none ${s.colorClass}`}>{s.value}</div>
+                <div className="text-xs text-slate-500 mt-1">{s.label}</div>
               </div>
             ))}
           </div>
         </div>
 
         {/* ── Breakdown ────────────────────────────── */}
-        <div className="anim-fade-up delay-1">
-          <div className="section-label" style={{ marginBottom: 16 }}>Detailed Breakdown</div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+        <div>
+          <div className="text-[11px] font-bold tracking-[0.1em] uppercase text-slate-500 mb-4">Detailed Breakdown</div>
+          <div className="flex flex-col gap-3.5">
             {breakdown.map((item, i) => (
               <div
-                key={i} className="card"
-                style={{
-                  padding: '24px 28px',
-                  borderColor: item.isCorrect ? 'rgba(52,211,153,0.18)' : 'rgba(248,113,113,0.18)',
-                }}
+                key={i} className={`bg-slate-900 border rounded-[24px] shadow-2xl shadow-black/40 py-6 px-7 ${item.isCorrect ? 'border-emerald-500/20' : 'border-red-500/20'}`}
               >
                 {/* Question Header */}
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 18 }}>
-                  <div style={{
-                    flexShrink: 0, width: 28, height: 28, borderRadius: 8,
-                    background: item.isCorrect ? 'var(--success-dim)' : 'var(--danger-dim)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    marginTop: 1
-                  }}>
+                <div className="flex items-start gap-3 mb-4.5">
+                  <div className={`shrink-0 w-7 h-7 rounded-lg flex items-center justify-center mt-px ${item.isCorrect ? 'bg-emerald-500/10' : 'bg-red-500/10'}`}>
                     {item.isCorrect
-                      ? <CheckCircle size={15} color="var(--success)" />
-                      : <XCircle size={15} color="var(--danger)" />}
+                      ? <CheckCircle size={15} className="text-emerald-400" />
+                      : <XCircle size={15} className="text-red-400" />}
                   </div>
-                  <p style={{ fontWeight: 600, fontSize: 15, lineHeight: 1.5, color: 'var(--text-1)' }}>
+                  <p className="font-semibold text-[15px] leading-relaxed text-slate-50">
                     {i + 1}. {item.question}
                   </p>
                 </div>
 
                 {/* Options */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8, paddingLeft: 40 }}>
+                <div className="flex flex-col gap-2 pl-10">
                   {item.options.map((opt, j) => {
                     const isCorrect  = opt === item.correctAnswer;
                     const isUserWrong = opt === item.userAnswer && !item.isCorrect;
+                    
+                    let bg = 'bg-white/5';
+                    let border = 'border-transparent';
+                    let text = 'text-slate-400';
+                    
+                    if (isCorrect) {
+                      bg = 'bg-emerald-500/10'; border = 'border-emerald-400'; text = 'text-emerald-400';
+                    } else if (isUserWrong) {
+                      bg = 'bg-red-500/10'; border = 'border-red-400'; text = 'text-red-400';
+                    }
+                    
                     return (
-                      <div key={j} style={{
-                        display: 'flex', alignItems: 'center', gap: 10,
-                        padding: '10px 14px', borderRadius: 10,
-                        background: isCorrect ? 'var(--success-dim)' : isUserWrong ? 'var(--danger-dim)' : 'rgba(255,255,255,0.03)',
-                        borderLeft: `3px solid ${isCorrect ? 'var(--success)' : isUserWrong ? 'var(--danger)' : 'transparent'}`,
-                        color: isCorrect ? 'var(--success)' : isUserWrong ? 'var(--danger)' : 'var(--text-2)',
-                        fontSize: 14,
-                      }}>
-                        <span style={{ flexShrink: 0 }}>
-                          {isCorrect ? <Check size={13} /> : isUserWrong ? <X size={13} /> : <Circle size={11} style={{ opacity: 0.3 }} />}
+                      <div key={j} className={`flex items-center gap-2.5 py-2.5 px-3.5 rounded-[10px] text-sm border-l-[3px] ${bg} ${border} ${text}`}>
+                        <span className="shrink-0">
+                          {isCorrect ? <Check size={13} /> : isUserWrong ? <X size={13} /> : <Circle size={11} className="opacity-30" />}
                         </span>
-                        <span style={{ flex: 1 }}>{opt}</span>
-                        {isCorrect && <span style={{ fontSize: 11, fontWeight: 700, opacity: 0.8 }}>Correct answer</span>}
-                        {isUserWrong && <span style={{ fontSize: 11, fontWeight: 700, opacity: 0.8 }}>Your answer</span>}
+                        <span className="flex-1">{opt}</span>
+                        {isCorrect && <span className="text-[11px] font-bold opacity-80">Correct answer</span>}
+                        {isUserWrong && <span className="text-[11px] font-bold opacity-80">Your answer</span>}
                       </div>
                     );
                   })}
@@ -151,12 +141,11 @@ export default function ResultPage() {
         </div>
 
         {/* ── Actions ──────────────────────────────── */}
-        <div className="anim-fade-up delay-2"
-          style={{ display: 'flex', gap: 14, marginTop: 48, justifyContent: 'center', flexWrap: 'wrap' }}>
-          <button className="btn btn-primary btn-lg" onClick={handleRetry}>
+        <div className="flex gap-3.5 mt-12 justify-center flex-wrap">
+          <button className="inline-flex items-center justify-center gap-[8px] font-semibold text-[15px] rounded-[18px] px-[28px] py-[16px] whitespace-nowrap bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/25 transition-all duration-200 hover:from-indigo-600 hover:to-purple-700 hover:shadow-xl hover:shadow-indigo-500/25 hover:-translate-y-[1px] active:translate-y-0" onClick={handleRetry}>
             <RotateCcw size={17} /> Try Another Test
           </button>
-          <button className="btn btn-ghost btn-lg" onClick={() => window.print()}>
+          <button className="inline-flex items-center justify-center gap-[8px] font-semibold text-[15px] border-[1.5px] border-white/10 rounded-[18px] px-[28px] py-[16px] whitespace-nowrap bg-transparent text-slate-400 transition-all hover:bg-indigo-500/10 hover:border-indigo-500/30 hover:text-violet-400" onClick={() => window.print()}>
             <Printer size={17} /> Print Results
           </button>
         </div>
