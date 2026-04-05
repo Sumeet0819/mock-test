@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { clearTest } from '../../redux/slices/testSlice';
 import {
-  Trophy, Star, TrendingUp, RotateCcw,
-  CheckCircle, XCircle, Printer, Check, X, Circle
+  CheckCircle, XCircle, Printer, Check, X, Circle, Bell, Settings,
+  ChevronLeft, ChevronRight, Home, LayoutList, TrendingUp, User
 } from 'lucide-react';
 
 export default function ResultPage() {
@@ -12,144 +12,204 @@ export default function ResultPage() {
   const { user } = useSelector(s => s.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  
+  // Pagination state for questions
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   if (!result) { navigate('/'); return null; }
 
-  const { score, total, percentage, breakdown } = result;
-
-  const grade = percentage >= 90
-    ? { label: 'Excellent!',      Icon: Trophy,     color: '#34d399', colorClass: 'text-emerald-400', borderClass: 'border-emerald-500/20', bgClass: 'bg-emerald-500/10' }
-    : percentage >= 75
-    ? { label: 'Great Job!',      Icon: Star,       color: '#a78bfa', colorClass: 'text-violet-400', borderClass: 'border-indigo-500/20', bgClass: 'bg-indigo-500/10' }
-    : percentage >= 60
-    ? { label: 'Good Pass!',      Icon: TrendingUp, color: '#fbbf24', colorClass: 'text-amber-400', borderClass: 'border-amber-500/20', bgClass: 'bg-amber-500/10' }
-    : { label: 'Keep Practicing', Icon: RotateCcw,  color: '#f87171', colorClass: 'text-red-400', borderClass: 'border-red-500/20', bgClass: 'bg-red-500/10' };
-
-  const { Icon: GradeIcon } = grade;
+  const { score, total, percentage, breakdown, testTitle } = result;
 
   const handleRetry = () => { dispatch(clearTest()); navigate('/'); };
 
-  const circumference = 2 * Math.PI * 52;
+  const totalPages = Math.ceil(breakdown.length / itemsPerPage);
+  const paginatedQuestions = breakdown.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  const correctAnswersCount = score;
+  const incorrectAnswersCount = total - score;
 
   return (
-    <div className="min-h-screen w-full bg-slate-950 text-slate-50 font-sans antialiased bg-[image:radial-gradient(ellipse_80%_60%_at_10%_-10%,rgba(99,102,241,0.13)_0%,transparent_55%),radial-gradient(ellipse_60%_50%_at_90%_100%,rgba(167,139,250,0.08)_0%,transparent_55%)]">
-      <div className="max-w-[720px] mx-auto pt-16 px-6 pb-24">
-
-        {/* ── Score Hero ───────────────────────────── */}
-        <div className="text-center mb-12">
-          <div className={`w-[72px] h-[72px] rounded-[22px] flex items-center justify-center mx-auto mb-5 border ${grade.borderClass} ${grade.bgClass}`}>
-            <GradeIcon size={34} className={grade.colorClass} />
+    <div className="bg-[#f7fafc] text-[#181c1e] font-sans antialiased min-h-screen">
+      {/* TopAppBar */}
+      <header className="fixed top-0 w-full z-50 bg-white/60 backdrop-blur-md shadow-sm border-b border-[#e0e3e5]">
+        <div className="flex justify-between items-center w-full px-8 py-4">
+          <div className="flex items-center gap-8">
+            <span className="text-xl font-bold text-[#002045] tracking-tighter">The Mock Test</span>
+            <nav className="hidden md:flex gap-6">
+              <button className="text-[#002045] font-bold tracking-tight border-b-2 border-[#002045] pb-1">Test Results</button>
+            </nav>
           </div>
+          <div className="flex items-center gap-4 text-[#545f72]">
+            <button className="active:scale-95 transition-transform"><Bell size={20} /></button>
+            <div className="w-10 h-10 rounded-full border border-[#adc7f7] bg-[#e5e9eb] flex items-center justify-center text-[#002045] font-bold uppercase overflow-hidden">
+               {user?.charAt(0) || 'U'}
+            </div>
+          </div>
+        </div>
+      </header>
 
-          <h1 className={`text-[2.4rem] font-black tracking-[-0.03em] mb-2 ${grade.colorClass}`}>
-            {grade.label}
-          </h1>
-          <p className="text-base text-slate-400">
-            Well done, <strong className="text-slate-50">{user}</strong>!
-          </p>
-
-          {/* SVG Ring */}
-          <div className="flex justify-center my-10">
-            <div className="relative w-40 h-40">
-              <svg viewBox="0 0 120 120" className="w-full h-full -rotate-90">
-                <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="10" />
-                <circle
-                  cx="60" cy="60" r="52" fill="none"
-                  stroke={grade.color} strokeWidth="10"
-                  strokeLinecap="round"
-                  strokeDasharray={circumference}
-                  strokeDashoffset={circumference * (1 - percentage / 100)}
-                  className="transition-[stroke-dashoffset] duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)]"
-                />
-              </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className={`text-[2rem] font-black leading-none ${grade.colorClass}`}>{percentage}%</span>
-                <span className="text-[13px] text-slate-500 mt-1">{score}/{total} correct</span>
+      <main className="pt-24 pb-20 px-4 md:px-8 max-w-7xl mx-auto flex flex-col md:flex-row gap-8">
+        {/* Left Column: Student Summary */}
+        <aside className="w-full md:w-1/3 flex flex-col gap-6">
+          <div className="bg-white p-8 rounded-xl shadow-[0_4px_24px_-12px_rgba(0,0,0,0.06)] border border-[#e0e3e5]/70">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-16 h-16 rounded-xl bg-[#002045] flex items-center justify-center text-white text-2xl font-bold uppercase shadow-inner">
+                {user?.charAt(0) || 'S'}
+              </div>
+              <div>
+                <h1 className="text-2xl font-extrabold text-[#002045] tracking-tight">{user || 'Student Name'}</h1>
+                <p className="text-[#545f72] text-xs uppercase tracking-wider font-semibold mt-1">Candidate Profile</p>
+              </div>
+            </div>
+            <div className="space-y-4 pt-4 border-t border-[#e0e3e5]/50">
+              <div>
+                <p className="text-[#86a0cd] text-[10px] uppercase tracking-widest font-bold mb-1">Test Title</p>
+                <h2 className="text-[#002045] font-bold text-lg">{testTitle || 'Completed Assessment'}</h2>
               </div>
             </div>
           </div>
 
-          {/* Stats Row */}
-          <div className="grid grid-cols-3 gap-3.5 max-w-[380px] mx-auto">
-            {[
-              { label: 'Correct', value: score, Icon: CheckCircle, colorClass: 'text-emerald-400', bgClass: 'bg-emerald-500/10' },
-              { label: 'Wrong', value: total - score, Icon: XCircle, colorClass: 'text-red-400', bgClass: 'bg-red-500/10' },
-              { label: 'Total', value: total, Icon: Circle, colorClass: 'text-violet-400', bgClass: 'bg-indigo-500/10' },
-            ].map(s => (
-              <div key={s.label} className="bg-slate-900 border border-white/10 rounded-[24px] shadow-2xl shadow-black/40 py-5 px-4 text-center">
-                <div className={`w-9 h-9 rounded-[10px] flex items-center justify-center mx-auto mb-2.5 ${s.bgClass}`}>
-                  <s.Icon size={18} className={s.colorClass} />
-                </div>
-                <div className={`text-[1.6rem] font-extrabold leading-none ${s.colorClass}`}>{s.value}</div>
-                <div className="text-xs text-slate-500 mt-1">{s.label}</div>
+          {/* Score Visualization */}
+          <div className="bg-[#002045] p-8 rounded-xl text-white overflow-hidden relative shadow-lg">
+            <div className="relative z-10">
+              <p className="text-[#adc7f7] text-[10px] uppercase tracking-widest font-bold mb-4">Final Score</p>
+              <div className="flex items-baseline gap-2">
+                <span className="text-6xl font-extrabold tracking-tighter">{Math.round(percentage)}</span>
+                <span className="text-2xl font-bold text-[#86a0cd]">%</span>
               </div>
-            ))}
+              <div className="mt-8 space-y-3">
+                <div className="flex justify-between text-sm">
+                  <span className="text-[#adc7f7] font-medium">Correct Answers</span>
+                  <span className="font-bold">{score}/{total}</span>
+                </div>
+                <div className="w-full bg-[#1a365d] h-1.5 rounded-full overflow-hidden">
+                  <div className="bg-gradient-to-r from-[#adc7f7] to-white h-full transition-all duration-1000" style={{ width: `${percentage}%` }}></div>
+                </div>
+              </div>
+            </div>
+            {/* Abstract Decorative Shapes */}
+            <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
+            <div className="absolute -top-10 -left-10 w-32 h-32 bg-[#adc7f7]/10 rounded-full blur-2xl pointer-events-none"></div>
           </div>
-        </div>
 
-        {/* ── Breakdown ────────────────────────────── */}
-        <div>
-          <div className="text-[11px] font-bold tracking-[0.1em] uppercase text-slate-500 mb-4">Detailed Breakdown</div>
-          <div className="flex flex-col gap-3.5">
-            {breakdown.map((item, i) => (
-              <div
-                key={i} className={`bg-slate-900 border rounded-[24px] shadow-2xl shadow-black/40 py-6 px-7 ${item.isCorrect ? 'border-emerald-500/20' : 'border-red-500/20'}`}
-              >
-                {/* Question Header */}
-                <div className="flex items-start gap-3 mb-4.5">
-                  <div className={`shrink-0 w-7 h-7 rounded-lg flex items-center justify-center mt-px ${item.isCorrect ? 'bg-emerald-500/10' : 'bg-red-500/10'}`}>
-                    {item.isCorrect
-                      ? <CheckCircle size={15} className="text-emerald-400" />
-                      : <XCircle size={15} className="text-red-400" />}
+          {/* Breakdown Bento Stats */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-white p-5 rounded-xl border border-[#e0e3e5]/70 text-center shadow-sm">
+              <div className="flex justify-center mb-2"><CheckCircle className="text-green-600" size={24} /></div>
+              <p className="text-[#002045] font-black text-2xl">{correctAnswersCount}</p>
+              <p className="text-[#545f72] text-[10px] uppercase font-bold tracking-widest mt-1">Correct</p>
+            </div>
+            <div className="bg-white p-5 rounded-xl border border-[#e0e3e5]/70 text-center shadow-sm">
+              <div className="flex justify-center mb-2"><XCircle className="text-red-500" size={24} /></div>
+              <p className="text-[#002045] font-black text-2xl">{incorrectAnswersCount}</p>
+              <p className="text-[#545f72] text-[10px] uppercase font-bold tracking-widest mt-1">Incorrect</p>
+            </div>
+          </div>
+        </aside>
+
+        {/* Right Column: Question Review */}
+        <section className="flex-1 space-y-6">
+          <div className="flex justify-between items-end px-2 sm:flex-row flex-col sm:items-end items-start gap-4">
+            <div>
+              <h3 className="text-xl font-black text-[#002045]">Detailed Question Review</h3>
+              <p className="text-[#545f72] text-sm mt-1">Analyze specific response patterns from your submission.</p>
+            </div>
+            <div className="flex gap-2 shrink-0">
+              <button className="bg-[#e5e9eb] text-[#002045] px-4 py-2 rounded-lg text-sm font-bold hover:bg-[#d7dadc] transition-colors flex items-center gap-2" onClick={() => window.print()}>
+                <Printer size={16} /> Export
+              </button>
+              <button className="bg-[#002045] text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-[#1a365d] shadow-md transition-colors" onClick={handleRetry}>
+                Take Another
+              </button>
+            </div>
+          </div>
+
+          {/* Review Items */}
+          <div className="space-y-4">
+            {paginatedQuestions.map((item, index) => {
+              const globalIndex = (currentPage - 1) * itemsPerPage + index + 1;
+              return (
+                <div key={globalIndex} className={`bg-white p-6 rounded-xl shadow-sm border-l-4 ${item.isCorrect ? 'border-l-green-500 border border-[#e0e3e5]/50' : 'border-l-red-500 border border-[#e0e3e5]/50'}`}>
+                  <div className="flex justify-between items-start mb-4">
+                    <span className="text-[#545f72] text-[11px] font-bold uppercase tracking-widest">Question {String(globalIndex).padStart(2, '0')}</span>
+                    <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-tighter ${item.isCorrect ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                      {item.isCorrect ? 'Correct' : 'Incorrect'}
+                    </span>
                   </div>
-                  <p className="font-semibold text-[15px] leading-relaxed text-slate-50">
-                    {i + 1}. {item.question}
+                  <p className="text-[#002045] font-semibold text-lg leading-relaxed mb-6">
+                    {item.question}
                   </p>
-                </div>
-
-                {/* Options */}
-                <div className="flex flex-col gap-2 pl-10">
-                  {item.options.map((opt, j) => {
-                    const isCorrect  = opt === item.correctAnswer;
-                    const isUserWrong = opt === item.userAnswer && !item.isCorrect;
-                    
-                    let bg = 'bg-white/5';
-                    let border = 'border-transparent';
-                    let text = 'text-slate-400';
-                    
-                    if (isCorrect) {
-                      bg = 'bg-emerald-500/10'; border = 'border-emerald-400'; text = 'text-emerald-400';
-                    } else if (isUserWrong) {
-                      bg = 'bg-red-500/10'; border = 'border-red-400'; text = 'text-red-400';
-                    }
-                    
-                    return (
-                      <div key={j} className={`flex items-center gap-2.5 py-2.5 px-3.5 rounded-[10px] text-sm border-l-[3px] ${bg} ${border} ${text}`}>
-                        <span className="shrink-0">
-                          {isCorrect ? <Check size={13} /> : isUserWrong ? <X size={13} /> : <Circle size={11} className="opacity-30" />}
-                        </span>
-                        <span className="flex-1">{opt}</span>
-                        {isCorrect && <span className="text-[11px] font-bold opacity-80">Correct answer</span>}
-                        {isUserWrong && <span className="text-[11px] font-bold opacity-80">Your answer</span>}
+                  
+                  <div className="grid md:grid-cols-2 gap-3">
+                    <div className={`p-4 rounded-xl border flex items-start gap-3 ${item.isCorrect ? 'bg-[#f7fafc] border-[#e0e3e5]' : 'bg-red-50 border-red-100'}`}>
+                      {item.isCorrect ? <CheckCircle className="text-green-600 shrink-0 mt-0.5" size={20} /> : <XCircle className="text-red-500 shrink-0 mt-0.5" size={20} />}
+                      <div>
+                        <p className={`text-[10px] uppercase font-bold tracking-wider mb-1 ${item.isCorrect ? 'text-[#545f72]' : 'text-red-700'}`}>Your Choice</p>
+                        <p className="text-[#002045] font-bold text-sm leading-snug">{item.userAnswer || 'No Answer'}</p>
                       </div>
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+                    </div>
 
-        {/* ── Actions ──────────────────────────────── */}
-        <div className="flex gap-3.5 mt-12 justify-center flex-wrap">
-          <button className="inline-flex items-center justify-center gap-[8px] font-semibold text-[15px] rounded-[18px] px-[28px] py-[16px] whitespace-nowrap bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/25 transition-all duration-200 hover:from-indigo-600 hover:to-purple-700 hover:shadow-xl hover:shadow-indigo-500/25 hover:-translate-y-[1px] active:translate-y-0" onClick={handleRetry}>
-            <RotateCcw size={17} /> Try Another Test
-          </button>
-          <button className="inline-flex items-center justify-center gap-[8px] font-semibold text-[15px] border-[1.5px] border-white/10 rounded-[18px] px-[28px] py-[16px] whitespace-nowrap bg-transparent text-slate-400 transition-all hover:bg-indigo-500/10 hover:border-indigo-500/30 hover:text-violet-400" onClick={() => window.print()}>
-            <Printer size={17} /> Print Results
-          </button>
+                    {!item.isCorrect && (
+                      <div className="p-4 rounded-xl bg-green-50 border border-green-100 flex items-start gap-3">
+                        <CheckCircle className="text-green-600 shrink-0 mt-0.5" size={20} />
+                        <div>
+                          <p className="text-[10px] text-green-700 uppercase font-bold tracking-wider mb-1">Correct Answer</p>
+                          <p className="text-[#002045] font-bold text-sm leading-snug">{item.correctAnswer}</p>
+                        </div>
+                      </div>
+                    )}
+                    {item.isCorrect && (
+                      <div className="p-4 rounded-xl bg-white border border-[#e0e3e5]/50 flex items-start gap-3 opacity-60">
+                         <Check className="text-slate-400 shrink-0 mt-0.5" size={20} />
+                         <div>
+                           <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">Correct Answer</p>
+                           <p className="text-[#002045] font-bold text-sm leading-snug">{item.correctAnswer}</p>
+                         </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center gap-4 pt-6">
+              <button 
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage(prev => prev - 1)}
+                className="w-10 h-10 rounded-full border border-[#adc7f7] flex items-center justify-center text-[#002045] hover:bg-[#e5e9eb] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <ChevronLeft size={20} className="-ml-1" />
+              </button>
+              <span className="text-sm font-bold text-[#002045]">
+                Showing {(currentPage - 1) * itemsPerPage + 1}-{Math.min(currentPage * itemsPerPage, breakdown.length)} of {breakdown.length}
+              </span>
+              <button 
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage(prev => prev + 1)}
+                className="w-10 h-10 rounded-full border border-[#adc7f7] flex items-center justify-center text-[#002045] hover:bg-[#e5e9eb] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <ChevronRight size={20} className="-mr-1" />
+              </button>
+            </div>
+          )}
+        </section>
+      </main>
+
+      {/* Bottom NavBar (Mobile) */}
+      <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white flex justify-around items-center px-4 py-3 pb-safe z-50 rounded-t-3xl shadow-[0_-4px_20px_rgba(0,0,0,0.05)] border-t border-slate-100">
+        <button onClick={() => navigate('/')} className="flex flex-col items-center justify-center text-slate-400 px-6 py-2 active:scale-90 transition-transform">
+          <Home size={24} strokeWidth={1.5} />
+          <span className="text-[10px] uppercase tracking-widest font-bold mt-1">Home</span>
+        </button>
+        <div className="flex flex-col items-center justify-center bg-[#d8e3fa] text-[#002045] rounded-2xl px-6 py-2 active:scale-90 transition-transform">
+           <LayoutList size={24} strokeWidth={2} />
+           <span className="text-[10px] uppercase tracking-widest font-bold mt-1">Results</span>
         </div>
-      </div>
+      </nav>
     </div>
   );
 }

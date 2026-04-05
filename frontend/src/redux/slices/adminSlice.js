@@ -7,6 +7,7 @@ const adminSlice = createSlice({
   initialState: {
     token: adminToken || null,
     isAuthenticated: !!adminToken,
+    resultsCache: {},
   },
   reducers: {
     setAdmin(state, action) {
@@ -17,10 +18,15 @@ const adminSlice = createSlice({
     logoutAdmin(state) {
       state.token = null;
       state.isAuthenticated = false;
+      state.resultsCache = {};
       localStorage.removeItem('admin_token');
     },
+    setTestResults(state, action) {
+      const { testId, attempts } = action.payload;
+      state.resultsCache[testId] = attempts;
+    }
   },
 });
 
-export const { setAdmin, logoutAdmin } = adminSlice.actions;
+export const { setAdmin, logoutAdmin, setTestResults } = adminSlice.actions;
 export default adminSlice.reducer;

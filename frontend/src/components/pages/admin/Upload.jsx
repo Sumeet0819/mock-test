@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../../lib/axios';
 import {
   ChevronLeft, UploadCloud, FileJson, Rocket,
-  CheckCircle2, XCircle, BookOpen, FileUp, Loader2
+  CheckCircle2, XCircle, BookOpen, FileUp, Loader2, LayoutDashboard, User, Bell
 } from 'lucide-react';
 
 const SAMPLE_JSON = `{
@@ -86,117 +86,125 @@ export default function Upload() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-slate-950 text-slate-50 font-sans antialiased bg-[image:radial-gradient(ellipse_80%_60%_at_10%_-10%,rgba(99,102,241,0.13)_0%,transparent_55%),radial-gradient(ellipse_60%_50%_at_90%_100%,rgba(167,139,250,0.08)_0%,transparent_55%)]">
-      <div className="max-w-[760px] mx-auto py-12 pb-20 px-6">
+    <div className="bg-[#f7fafc] text-[#181c1e] flex h-screen overflow-hidden font-sans">
+      {/* Sidebar */}
+      <aside className="hidden md:flex h-screen w-64 bg-slate-50 flex-col p-6 gap-2 border-r border-[#e0e3e5] shrink-0">
+         <div className="mb-8 px-4">
+           <h1 className="text-lg font-black text-[#002045] tracking-tighter uppercase font-sans">Admin Portal</h1>
+           <p className="text-xs text-[#545f72] font-medium opacity-70 mt-1">Institutional Access</p>
+         </div>
+         <nav className="flex-grow space-y-1">
+           <div className="flex items-center gap-3 text-slate-600 hover:bg-slate-100 hover:text-slate-900 px-4 py-3 rounded-lg cursor-pointer transition-all" onClick={() => navigate('/admin/dashboard')}>
+             <LayoutDashboard size={20} />
+             <span className="text-sm font-medium">Overview</span>
+           </div>
+           <div className="flex items-center gap-3 bg-blue-50 text-blue-800 font-bold rounded-lg px-4 py-3 cursor-pointer select-none transition-all">
+             <BookOpen size={20} />
+             <span className="text-sm font-medium">Test Library</span>
+           </div>
+         </nav>
+      </aside>
 
-        {/* ── Header ───────────────────────────────────── */}
-        <div className="flex items-center gap-4 mb-11">
-          <button className="inline-flex items-center justify-center gap-[6px] font-semibold text-[13px] border-[1.5px] border-white/10 rounded-[12px] px-[16px] py-[8px] whitespace-nowrap bg-transparent text-slate-400 transition-all hover:bg-indigo-500/10 hover:border-indigo-500/30 hover:text-violet-400" onClick={() => navigate('/admin/dashboard')}>
-            <ChevronLeft size={15} /> Back
-          </button>
-          <div>
-            <h1 className="text-[1.7rem] font-black tracking-[-0.02em]">Upload Test</h1>
-            <p className="text-[13px] text-slate-500 mt-0.5">Paste JSON or drag a .json file</p>
-          </div>
-        </div>
+      {/* Main Content Area */}
+      <main className="flex-grow flex flex-col h-screen overflow-y-auto relative">
+        <header className="sticky top-0 bg-white/80 backdrop-blur-md z-50 flex justify-between items-center px-8 py-4 border-b border-[#e5e9eb]">
+           <div className="flex items-center gap-8">
+             <span className="text-xl font-bold text-[#002045] tracking-tighter">The Mock Test</span>
+           </div>
+           <div className="flex items-center gap-4">
+             <button className="text-slate-400 hover:text-[#002045] transition-colors"><Bell size={20} /></button>
+             <div className="w-10 h-10 rounded-full bg-[#e5e9eb] border-2 border-[#adc7f7] overflow-hidden flex items-center justify-center text-[#002045]">
+               <User size={20} />
+             </div>
+           </div>
+        </header>
 
-        <div className="flex flex-col gap-5">
-
-          {/* ── Drop Zone ──────────────────────────────── */}
-          <div className="bg-slate-900 border border-white/10 rounded-[24px] shadow-2xl shadow-black/40 py-7 px-8">
-            <div className="font-semibold text-[15px] flex items-center gap-2 mb-4.5">
-              <FileUp size={17} color="#a78bfa" /> Upload JSON File
-            </div>
-            <label
-              className="flex flex-col items-center gap-3 py-9 px-6 rounded-[14px] border-2 border-dashed border-indigo-500/25 cursor-pointer text-center transition-[border-color,background] duration-200 hover:border-indigo-500 hover:bg-indigo-500/10"
-              onDragOver={e => { e.preventDefault(); e.currentTarget.style.borderColor = '#6366f1'; e.currentTarget.style.background = 'rgba(99,102,241,0.1)'; }}
-              onDragLeave={e => { e.currentTarget.style.borderColor = 'rgba(99,102,241,0.25)'; e.currentTarget.style.background = 'transparent'; }}
-              onDrop={e => { e.currentTarget.style.borderColor = 'rgba(99,102,241,0.25)'; e.currentTarget.style.background = 'transparent'; handleDrop(e); }}
+        <div className="px-8 pb-12 pt-8 max-w-4xl mx-auto w-full space-y-8">
+          {/* Header section form for Upload */}
+          <div className="flex items-center gap-4 mb-2">
+            <button 
+              className="inline-flex items-center justify-center gap-2 font-bold text-sm bg-white border border-[#e5e9eb] rounded-lg px-4 py-2 hover:bg-[#f1f4f6]" 
+              onClick={() => navigate('/admin/dashboard')}
             >
-              <input type="file" accept=".json" className="hidden" onChange={handleFileUpload} />
-              <UploadCloud size={36} color="#6366f1" className="opacity-70" />
-              <div>
-                <div className="font-semibold mb-1">
-                  Drop your <span className="text-violet-400">.json</span> file here
-                </div>
-                <div className="text-[13px] text-slate-500">or click to open file picker</div>
-              </div>
-            </label>
+              <ChevronLeft size={16} /> Back
+            </button>
+            <div>
+              <h1 className="text-2xl font-extrabold text-[#002045] tracking-tight">Upload New Test</h1>
+              <p className="text-sm text-[#545f72]">Provide test structure in JSON format.</p>
+            </div>
           </div>
 
-          {/* ── Textarea ───────────────────────────────── */}
-          <div className="bg-slate-900 border border-white/10 rounded-[24px] shadow-2xl shadow-black/40 py-7 px-8">
-            <div className="flex items-center justify-between mb-4">
-              <div className="font-semibold text-[15px] flex items-center gap-2">
-                <FileJson size={17} color="#a78bfa" /> Paste JSON
-              </div>
-              <button
-                className="inline-flex items-center justify-center gap-[6px] font-semibold text-[13px] border-[1.5px] border-white/10 rounded-[12px] px-[16px] py-[8px] whitespace-nowrap bg-transparent text-slate-400 transition-all hover:bg-indigo-500/10 hover:border-indigo-500/30 hover:text-violet-400 text-xs"
-                onClick={() => handleJsonChange(SAMPLE_JSON)}
-              >
-                <BookOpen size={12} /> Load Sample
-              </button>
-            </div>
+          <div className="flex flex-col gap-6">
+             <div className="bg-white p-8 rounded-xl shadow-sm border border-[#f1f4f6]">
+               <div className="font-semibold text-[15px] flex items-center gap-2 mb-4 text-[#002045]">
+                 <FileUp size={18} /> Upload JSON File
+               </div>
+               <label
+                 className="flex flex-col items-center gap-3 py-10 px-6 rounded-xl border-2 border-dashed border-[#adc7f7] cursor-pointer text-center bg-[#f1f4f6]/50 hover:bg-[#f1f4f6] hover:border-[#002045] transition-all"
+                 onDragOver={e => { e.preventDefault(); e.currentTarget.style.borderColor = '#002045'; e.currentTarget.style.background = '#f1f4f6'; }}
+                 onDragLeave={e => { e.currentTarget.style.borderColor = '#adc7f7'; e.currentTarget.style.background = 'rgba(241, 244, 246, 0.5)'; }}
+                 onDrop={e => { e.currentTarget.style.borderColor = '#adc7f7'; e.currentTarget.style.background = 'rgba(241, 244, 246, 0.5)'; handleDrop(e); }}
+               >
+                 <input type="file" accept=".json" className="hidden" onChange={handleFileUpload} />
+                 <UploadCloud size={40} className="text-[#002045] opacity-60" />
+                 <div>
+                   <div className="font-semibold text-sm mb-1 text-[#002045]">Drop your <span className="text-[#1a365d]">.json</span> file here</div>
+                   <div className="text-xs text-[#545f72]">or click to open file picker</div>
+                 </div>
+               </label>
+             </div>
+             
+             <div className="bg-white p-8 rounded-xl shadow-sm border border-[#f1f4f6]">
+               <div className="flex items-center justify-between mb-4">
+                 <div className="font-semibold text-[15px] flex items-center gap-2 text-[#002045]">
+                   <FileJson size={18} /> Paste JSON Content
+                 </div>
+                 <button
+                   className="text-xs font-bold text-[#1a365d] bg-[#f1f4f6] px-3 py-1.5 rounded-lg hover:bg-[#e0e3e5] transition-colors"
+                   onClick={() => handleJsonChange(SAMPLE_JSON)}
+                 >
+                   Load Sample
+                 </button>
+               </div>
+               
+               <textarea
+                 className="w-full bg-[#f1f4f6]/50 border border-[#e0e3e5] text-sm text-[#181c1e] rounded-xl px-4 py-4 outline-none focus:border-[#002045] focus:ring-2 focus:ring-[#002045]/20 min-h-[220px] font-mono resize-y"
+                 value={jsonText}
+                 onChange={e => handleJsonChange(e.target.value)}
+                 placeholder={`{\n  "title": "Test Title",\n  "duration": 30,\n  "questions": [...]\n}`}
+               />
+               
+               {parseError && (
+                 <div className="flex items-start gap-2 p-3 bg-red-50 text-red-600 rounded-lg border border-red-100 mt-4 text-sm font-medium">
+                   <XCircle size={16} className="shrink-0 mt-px" />
+                   <span>{parseError}</span>
+                 </div>
+               )}
+               {parsed && !parseError && (
+                 <div className="flex items-start gap-2 p-3 bg-green-50 text-green-700 rounded-lg border border-green-100 mt-4 text-sm font-medium">
+                   <CheckCircle2 size={16} className="shrink-0 mt-px" />
+                   <span>
+                     Valid — <strong>"{parsed.title}"</strong> · {parsed.questions.length} questions · {parsed.duration} min
+                   </span>
+                 </div>
+               )}
+             </div>
 
-            <textarea
-              className="w-full bg-white/5 border-[1.5px] border-white/10 text-slate-50 rounded-[16px] px-[18px] py-[14px] outline-none transition-all placeholder:text-slate-500 focus:border-indigo-500 focus:bg-indigo-500/10 focus:ring-4 focus:ring-indigo-500/10 min-h-[220px] resize-y font-mono text-[13px] leading-[1.6]"
-              value={jsonText}
-              onChange={e => handleJsonChange(e.target.value)}
-              placeholder={`{\n  "title": "Test Title",\n  "duration": 30,\n  "questions": [...]\n}`}
-            />
+             {/* Status Messages */}
+             {success && <div className="p-4 bg-green-50 text-green-700 rounded-xl border border-green-100 text-sm font-medium">{success}</div>}
+             {error && <div className="p-4 bg-red-50 text-red-600 rounded-xl border border-red-100 text-sm font-medium">{error}</div>}
 
-            {/* Validation Feedback */}
-            {parseError && (
-              <div className="flex items-start gap-[10px] px-[18px] py-[14px] rounded-[16px] text-[14px] leading-[1.5] bg-red-500/10 text-red-400 border border-red-500/20 mt-3.5">
-                <XCircle size={15} className="shrink-0 mt-px" />
-                <span>{parseError}</span>
-              </div>
-            )}
-            {parsed && !parseError && (
-              <div className="flex items-start gap-[10px] px-[18px] py-[14px] rounded-[16px] text-[14px] leading-[1.5] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mt-3.5">
-                <CheckCircle2 size={15} className="shrink-0 mt-px" />
-                <span>
-                  Valid — <strong className="font-bold">"{parsed.title}"</strong> · {parsed.questions.length} questions · {parsed.duration} min
-                </span>
-              </div>
-            )}
-          </div>
-
-          {/* Status Messages */}
-          {success && <div className="flex items-start gap-[10px] px-[18px] py-[14px] rounded-[16px] text-[14px] leading-[1.5] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">{success}</div>}
-          {error   && <div className="flex items-start gap-[10px] px-[18px] py-[14px] rounded-[16px] text-[14px] leading-[1.5] bg-red-500/10 text-red-400 border border-red-500/20">{error}</div>}
-
-          {/* Upload Button */}
-          <button
-            className="inline-flex items-center justify-center gap-[8px] font-semibold text-[15px] rounded-[18px] px-[28px] py-[16px] whitespace-nowrap bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/25 transition-all duration-200 hover:from-indigo-600 hover:to-purple-700 hover:shadow-xl hover:shadow-indigo-500/25 hover:-translate-y-[1px] active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed w-full"
-            onClick={handleUpload}
-            disabled={!parsed || uploading}
-          >
-            {uploading ? <Loader2 size={18} className="animate-spin" /> : <Rocket size={18} />}
-            {uploading ? 'Uploading…' : 'Upload Test'}
-          </button>
-
-          {/* Schema Reference */}
-          <div className="bg-slate-900 border border-white/10 rounded-[24px] shadow-2xl shadow-black/40 py-6 px-7">
-            <div className="font-semibold text-[13px] flex items-center gap-2 text-slate-400 mb-4">
-              <BookOpen size={14} /> JSON Schema Reference
-            </div>
-            <pre className="text-xs leading-[1.8] text-slate-500 font-mono overflow-x-auto p-4 rounded-[10px] bg-black/30 border border-white/10">
-{`{
-  "title":    "string (required)",
-  "duration": number in minutes (required),
-  "questions": [
-    {
-      "question":     "string (required)",
-      "options":      ["A", "B", "C", "D"]  // min 2
-      "correctAnswer": "must match one of options"
-    }
-  ]
-}`}
-            </pre>
+             <button
+               className="w-full bg-[#002045] hover:bg-[#1a365d] text-white font-bold py-4 rounded-xl shadow-lg shadow-[#002045]/10 transition-all active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+               onClick={handleUpload}
+               disabled={!parsed || uploading}
+             >
+               {uploading ? <Loader2 size={18} className="animate-spin" /> : <Rocket size={18} />}
+               {uploading ? 'Uploading...' : 'Deploy Assessment'}
+             </button>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

@@ -4,8 +4,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setTest, setAnswer, setResult } from '../../redux/slices/testSlice';
 import api from '../../lib/axios';
 import {
-  Timer, ChevronLeft, ChevronRight, CheckCircle2,
-  Loader2, AlertCircle, Home, LayoutGrid
+  Timer, ArrowLeft, ArrowRight, CheckCircle2,
+  Loader2, AlertCircle, Home, LayoutGrid, Info, User, CheckCheck, Send, LogOut
 } from 'lucide-react';
 
 export default function TestPage() {
@@ -24,8 +24,6 @@ export default function TestPage() {
 
   useEffect(() => { if (!user || !token) navigate('/'); }, [user, token, navigate]);
 
-  // If a result already exists, immediately replace the current route with the result page
-  // This explicitly catches the browser "Back" button
   useEffect(() => {
     if (result) navigate('/result', { replace: true });
   }, [result, navigate]);
@@ -49,7 +47,7 @@ export default function TestPage() {
     try {
       const res = await api.post('/test/submit', { testId: currentTest._id, answers, name: user, token });
       dispatch(setResult(res.data));
-      navigate('/result', { replace: true }); // Prevent test from staying in history
+      navigate('/result', { replace: true });
     } catch {
       setError('Failed to submit. Please try again.');
       setSubmitting(false);
@@ -68,19 +66,23 @@ export default function TestPage() {
   }, [timeLeft === null, handleSubmit]);
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center">
-      <Loader2 size={36} className="animate-spin" color="#6366f1" />
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center">
+      <Loader2 size={40} className="animate-spin text-primary" />
+      <span className="mt-4 text-primary font-headline font-bold anim-pulse">Preparing your assessment...</span>
     </div>
   );
 
   if (error) return (
-    <div className="min-h-screen flex flex-col items-center justify-center gap-5">
-      <div className="w-14 h-14 rounded-2xl bg-red-500/10 flex items-center justify-center">
-        <AlertCircle size={26} color="#f87171" />
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-6 anim-fade-in">
+      <div className="w-16 h-16 rounded-[1.25rem] bg-error-container/20 flex items-center justify-center shadow-sm">
+        <AlertCircle size={32} className="text-error" />
       </div>
-      <p className="text-slate-400">{error}</p>
-      <button className="inline-flex items-center justify-center gap-[8px] font-semibold text-[14px] border-[1.5px] border-white/10 rounded-[16px] px-[24px] py-[12px] whitespace-nowrap bg-transparent text-slate-400 transition-all hover:bg-indigo-500/10 hover:border-indigo-500/30 hover:text-violet-400" onClick={() => navigate('/')}>
-        <Home size={15} /> Go Home
+      <p className="text-on-surface-variant font-medium text-lg">{error}</p>
+      <button
+        className="inline-flex items-center gap-2 font-bold text-[15px] border-2 border-outline-variant rounded-xl px-6 py-3 transition-all hover:bg-primary/5 hover:border-primary hover:text-primary active:scale-95"
+        onClick={() => navigate('/')}
+      >
+        <Home size={18} /> Go Home
       </button>
     </div>
   );
@@ -89,129 +91,198 @@ export default function TestPage() {
 
   const q = currentTest.questions[current];
   const total = currentTest.questions.length;
-  const answered = answers.filter(a => a !== '').length;
+  // const answered = answers.filter(a => a !== '').length; // Keeping if needed
   const mins = Math.floor(timeLeft / 60);
   const secs = timeLeft % 60;
   const isUrgent = timeLeft < 60;
-  const timerColor = timeLeft < 60 ? '#f87171' : timeLeft < 180 ? '#fbbf24' : '#34d399';
   const progressPct = ((current + 1) / total) * 100;
 
   return (
-    <div className="min-h-screen w-full bg-slate-950 text-slate-50 font-sans antialiased bg-[image:radial-gradient(ellipse_80%_60%_at_10%_-10%,rgba(99,102,241,0.13)_0%,transparent_55%),radial-gradient(ellipse_60%_50%_at_90%_100%,rgba(167,139,250,0.08)_0%,transparent_55%)] pb-16">
-      {/* ── Top Bar ──────────────────────────────────── */}
-      <div className="sticky top-0 z-50 bg-slate-950/90 backdrop-blur-[20px] border-b border-white/10">
-        <div className="max-w-[800px] mx-auto px-6">
-          <div className="flex items-center justify-between gap-4 h-16">
-            {/* Title */}
-            <div className="min-w-0">
-              <div className="font-bold text-[15px] overflow-hidden text-ellipsis whitespace-nowrap">
-                {currentTest.title}
-              </div>
-              <div className="text-xs text-slate-500 mt-[1px]">
-                Hi {user} · Q{current + 1}/{total}
-              </div>
-            </div>
+    <div className="bg-background font-body text-on-surface antialiased min-h-screen">
 
-            {/* Timer */}
-            <div className={`flex items-center gap-2 py-2 px-[18px] rounded-xl font-tabular-nums transition-all duration-300 border ${isUrgent ? 'bg-red-500/10 border-red-500/30' : 'bg-white/5 border-white/10'}`}
-              style={{ color: timerColor }}>
-              <Timer size={16} />
-              <span className="font-mono text-lg font-extrabold">
-                {String(mins).padStart(2,'0')}:{String(secs).padStart(2,'0')}
+      {/* TopAppBar */}
+      <header className="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-md shadow-sm border-b border-outline-variant/10 anim-fade-in">
+        <div className="flex justify-between items-center w-full px-8 py-4">
+
+          <div className="flex items-center gap-6">
+            <span className="text-xl font-bold text-primary tracking-tighter font-headline">The Mock Test</span>
+            <div className="hidden md:flex gap-6 items-center border-l border-outline-variant/30 pl-6">
+              <span className="text-outline font-bold text-[13px] uppercase tracking-wide">{currentTest.title}</span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-6">
+            <button 
+              onClick={() => {
+                if (window.confirm('Are you sure you want to exit the test? Your progress will not be saved.')) {
+                  navigate('/');
+                }
+              }}
+              className="flex items-center gap-2 text-[12px] font-bold text-error bg-error/10 border border-error/20 px-4 py-2 rounded-[0.6rem] transition-all hover:bg-error hover:text-white"
+            >
+              <LogOut size={16} />
+              <span className="hidden sm:inline">Exit Test</span>
+            </button>
+            
+            <div className="hidden md:flex flex-col items-end border-l border-outline-variant/30 pl-6">
+              <span className="text-[10px] uppercase tracking-widest font-bold text-outline">Time Remaining</span>
+              <span className={`text-lg font-headline font-extrabold flex items-center gap-2 ${isUrgent ? 'text-error animate-pulse' : 'text-primary'}`}>
+                {isUrgent && <Timer size={16} />}
+                {String(mins).padStart(2, '0')}:{String(secs).padStart(2, '0')}
               </span>
             </div>
+
+            <div className="h-10 w-10 rounded-[0.85rem] bg-surface-container-high border border-outline-variant/20 flex flex-col items-center justify-center overflow-hidden shadow-sm">
+              <User className="text-outline" size={20} />
+            </div>
           </div>
 
-          {/* Progress Bar */}
-          <div className="h-[3px] bg-white/5 rounded-full mb-0">
-            <div className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-violet-400 transition-[width] duration-400 ease-out"
-              style={{ width: `${progressPct}%` }} />
-          </div>
         </div>
-      </div>
+        {/* Underline separator */}
+        <div className="bg-outline-variant/20 h-[1px] w-full"></div>
+      </header>
 
-      {/* ── Question ─────────────────────────────────── */}
-      <div className="max-w-[800px] mx-auto pt-10 px-6">
-        <div className="bg-slate-900 border border-white/10 rounded-[24px] shadow-2xl shadow-black/40 py-10 px-11 mb-6" key={current}>
-          <div className="inline-flex items-center gap-[6px] px-[14px] py-[5px] rounded-full text-[12px] font-semibold tracking-[0.02em] bg-indigo-500/10 text-violet-400 mb-5">
-            Question {current + 1} of {total}
+      <main className="pt-[106px] pb-32 min-h-screen flex flex-col items-center">
+
+        {/* Progress Navigation Header */}
+        <div className="w-full max-w-[90rem] px-8 mb-8 flex flex-col gap-5 anim-fade-up">
+          <div className="flex justify-between items-end">
+            <div className="flex flex-col">
+              <span className="text-[11px] uppercase tracking-widest font-bold text-outline mb-1.5">Assessment Progress</span>
+              <h1 className="text-2xl md:text-[1.75rem] font-headline font-extrabold text-primary tracking-tight">Question {current + 1} of {total}</h1>
+            </div>
           </div>
 
-          <p className="text-[19px] font-semibold leading-[1.6] mb-9 text-slate-50">
-            {q.question}
-          </p>
-
-          <div className="flex flex-col gap-3">
-            {q.options.map((opt, i) => {
-              const isSelected = answers[current] === opt;
-              return (
-                <button
-                  key={i}
-                  onClick={() => dispatch(setAnswer({ index: current, answer: opt }))}
-                  className={`flex items-center gap-3.5 py-4 px-5 rounded-[14px] font-[inherit] text-[15px] text-left cursor-pointer transition-all duration-150 border-[1.5px] ${isSelected ? 'border-indigo-500 bg-indigo-500/10 text-violet-400 translate-x-1 font-semibold' : 'border-white/10 bg-white/5 text-slate-50 font-normal'}`}
-                >
-                  {/* Option Letter */}
-                  <span className={`shrink-0 w-[30px] h-[30px] rounded-lg flex items-center justify-center text-[13px] font-bold transition-all duration-150 ${isSelected ? 'bg-indigo-500 text-white' : 'bg-white/10 text-slate-500'}`}>
-                    {String.fromCharCode(65 + i)}
-                  </span>
-                  <span className="flex-1">{opt}</span>
-                  {isSelected && <CheckCircle2 size={16} color="#6366f1" className="shrink-0" />}
-                </button>
-              );
-            })}
+          {/* Focus Bar */}
+          <div className="h-[6px] w-full bg-surface-container-highest rounded-full overflow-hidden shadow-inner">
+            <div
+              className="h-full rounded-full transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
+              style={{ width: `${progressPct}%`, background: 'linear-gradient(90deg, #002045 0%, #455f88 100%)' }}
+            ></div>
           </div>
         </div>
 
-        {/* ── Navigation ───────────────────────────────── */}
-        <div className="flex items-center justify-between gap-4 flex-wrap mb-8">
-          <button
-            className="inline-flex items-center justify-center gap-[8px] font-semibold text-[14px] border-[1.5px] border-white/10 rounded-[16px] px-[24px] py-[12px] whitespace-nowrap bg-transparent text-slate-400 transition-all hover:bg-indigo-500/10 hover:border-indigo-500/30 hover:text-violet-400"
-            onClick={() => setCurrent(c => Math.max(0, c - 1))}
-            disabled={current === 0}
-          >
-            <ChevronLeft size={16} /> Previous
-          </button>
+        {/* Asymmetric Question Layout */}
+        <div className="w-full max-w-[90rem] px-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
-          <span className="text-[13px] text-slate-500">
-            {answered} of {total} answered
-          </span>
+          {/* Left Panel: Context & Navigator */}
+          <aside className="lg:col-span-5 space-y-6 order-2 lg:order-1 anim-fade-up delay-1">
 
-          {current < total - 1 ? (
-            <button className="inline-flex items-center justify-center gap-[8px] font-semibold text-[14px] rounded-[16px] px-[24px] py-[12px] whitespace-nowrap bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/25 transition-all duration-200 hover:from-indigo-600 hover:to-purple-700 hover:shadow-xl hover:shadow-indigo-500/25 hover:-translate-y-[1px] active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed" onClick={() => setCurrent(c => c + 1)}>
-              Next <ChevronRight size={16} />
-            </button>
-          ) : (
-            <button className="inline-flex items-center justify-center gap-[8px] font-semibold text-[14px] rounded-[16px] px-[24px] py-[12px] whitespace-nowrap bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/25 transition-all duration-200 hover:from-indigo-600 hover:to-purple-700 hover:shadow-xl hover:shadow-indigo-500/25 hover:-translate-y-[1px] active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed" onClick={handleSubmit} disabled={submitting}>
-              {submitting ? <Loader2 size={15} className="animate-spin" /> : <CheckCircle2 size={15} />}
-              {submitting ? 'Submitting…' : 'Submit Test'}
-            </button>
-          )}
-        </div>
+            <div className="p-6 bg-surface-container-low rounded-[1.25rem] space-y-4 border border-outline-variant/20 shadow-sm transition-all hover:shadow-md hover:border-outline-variant/40">
+              <div className="flex items-center gap-2 text-primary">
+                <Info size={16} strokeWidth={2.5} />
+                <span className="text-[10px] uppercase tracking-widest font-bold">Contextual Brief</span>
+              </div>
+              <p className="text-[0.95rem] leading-relaxed text-on-surface-variant font-medium">
+                Ensure you read all options carefully. The options may be similar but carry distinct contextual meanings depending on the topic. Good luck, {user}!
+              </p>
+            </div>
 
-        {/* ── Question Navigator ───────────────────────── */}
-        <div className="bg-slate-900 border border-white/10 rounded-[24px] shadow-2xl shadow-black/40 py-6 px-7">
-          <div className="flex items-center gap-2 mb-4">
-            <LayoutGrid size={14} color="#606080" />
-            <span className="text-[11px] font-bold tracking-[0.1em] uppercase text-slate-500">Question Navigator</span>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {currentTest.questions.map((_, i) => (
+            <div className="p-6 bg-surface-container-low rounded-[1.25rem] border border-outline-variant/20 shadow-sm transition-all hover:shadow-md hover:border-outline-variant/40">
+              <div className="flex items-center gap-2 text-primary mb-5">
+                <LayoutGrid size={16} strokeWidth={2.5} />
+                <span className="text-[10px] uppercase tracking-widest font-bold">Question Navigator</span>
+              </div>
+
+              <div className="grid grid-cols-6 md:grid-cols-8 lg:grid-cols-6 gap-2.5">
+                {currentTest.questions.map((_, i) => {
+                  const isCurrent = i === current;
+                  const isAnswered = !!answers[i];
+
+                  let btnClass = "h-11 rounded-[0.6rem] flex items-center justify-center text-[13px] font-bold transition-all cursor-pointer font-headline ";
+
+                  if (isCurrent) {
+                    btnClass += "ring-[3px] ring-primary/20 bg-primary-fixed text-primary shadow-sm hover:scale-105 hover:bg-primary-fixed-dim";
+                  } else if (isAnswered) {
+                    btnClass += "bg-primary text-white shadow-[0_2px_8px_rgba(0,32,69,0.15)] hover:scale-105 hover:bg-primary-container";
+                  } else {
+                    btnClass += "bg-surface-container-highest text-outline hover:bg-outline-variant/60 hover:text-on-surface-variant hover:scale-105";
+                  }
+
+                  return (
+                    <button key={i} onClick={() => setCurrent(i)} className={btnClass}>
+                      {i + 1}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </aside>
+
+          {/* Right Panel: The Question Canvas */}
+          <div className="lg:col-span-7 order-1 lg:order-2 anim-fade-up delay-2">
+            <div className="bg-surface-container-lowest p-8 md:p-14 rounded-[2rem] shadow-[0_16px_40px_-12px_rgba(0,32,69,0.08)] border border-outline-variant/20">
+
+              <div className="mb-12">
+                <h2 className="text-[1.05rem] md:text-[1.15rem] font-body font-semibold leading-[1.6] text-on-surface tracking-tight">
+                  {q.question}
+                </h2>
+              </div>
+
+              {/* Multiple Choice Options */}
+              <div className="space-y-5">
+                {q.options.map((opt, i) => {
+                  const isSelected = answers[current] === opt;
+                  return (
+                    <label
+                      key={i}
+                      className={`group relative flex items-center px-8 py-5 bg-surface border-b-2 rounded-xl transition-all duration-200 cursor-pointer ${isSelected ? 'border-primary bg-primary/5 shadow-sm' : 'border-outline-variant/30 hover:border-outline-variant/60 hover:bg-surface-container-low hover:-translate-y-[1px]'}`}
+                    >
+                      <input
+                        type="radio"
+                        className="hidden peer"
+                        name="mock-test-option"
+                        checked={isSelected}
+                        onChange={() => dispatch(setAnswer({ index: current, answer: opt }))}
+                      />
+                      <div className={`flex-shrink-0 w-6 h-6 rounded-lg border-[2px] ${isSelected ? 'bg-primary border-primary shadow-inner shadow-black/20' : 'border-outline-variant group-hover:border-outline'} flex items-center justify-center transition-all mr-6`}>
+                        <div className={`w-2 h-2 bg-white rounded-[3px] transition-all transform ${isSelected ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}></div>
+                      </div>
+                      <span className={`text-[0.9rem] md:text-[0.95rem] leading-[1.6] font-medium font-body transition-colors ${isSelected ? 'text-primary font-bold' : 'text-on-surface-variant group-hover:text-on-surface'}`}>
+                        {opt}
+                      </span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Footer Navigation Controls */}
+            <div className="mt-10 flex justify-between items-center px-2">
               <button
-                key={i}
-                onClick={() => setCurrent(i)}
-                className="w-[38px] h-[38px] rounded-[10px] text-[13px] font-bold cursor-pointer transition-all duration-150 font-[inherit]"
-                style={{
-                  border: `1.5px solid ${i === current ? '#6366f1' : answers[i] ? '#34d399' : 'rgba(255,255,255,0.1)'}`,
-                  background: i === current ? '#6366f1' : answers[i] ? 'rgba(52,211,153,0.12)' : 'rgba(255,255,255,0.05)',
-                  color: i === current ? 'white' : answers[i] ? '#34d399' : '#64748b'
-                }}
+                onClick={() => setCurrent(c => Math.max(0, c - 1))}
+                disabled={current === 0}
+                className="flex items-center gap-2 px-6 py-4 rounded-xl text-primary font-bold hover:bg-primary/5 transition-colors active:scale-95 disabled:opacity-40 disabled:hover:bg-transparent disabled:active:scale-100 disabled:cursor-not-allowed"
               >
-                {i + 1}
+                <ArrowLeft size={18} />
+                <span>Previous</span>
               </button>
-            ))}
+
+              <div className="flex gap-4">
+                {current < total - 1 ? (
+                  <button
+                    onClick={() => setCurrent(c => c + 1)}
+                    className="flex items-center gap-2 px-8 py-4 rounded-xl bg-primary text-white font-bold shadow-[0_8px_20px_rgba(0,32,69,0.15)] hover:shadow-[0_12px_25px_rgba(0,32,69,0.25)] hover:-translate-y-[2px] hover:bg-primary-container transition-all active:scale-[0.98] disabled:opacity-50"
+                  >
+                    <span>Next Question</span>
+                    <ArrowRight size={18} />
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleSubmit}
+                    disabled={submitting}
+                    className="flex items-center gap-2 px-8 py-4 rounded-xl bg-primary text-white font-bold shadow-[0_8px_20px_rgba(0,32,69,0.15)] hover:shadow-[0_12px_25px_rgba(0,32,69,0.25)] hover:-translate-y-[2px] hover:bg-primary-container transition-all active:scale-[0.98] disabled:opacity-50 disabled:hover:-translate-y-0 disabled:cursor-not-allowed"
+                  >
+                    {submitting ? <Loader2 className="animate-spin" size={18} /> : <CheckCheck size={18} />}
+                    <span>{submitting ? 'Submitting...' : 'Submit Assessment'}</span>
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </main>
+
     </div>
   );
 }
